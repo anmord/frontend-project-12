@@ -4,7 +4,10 @@
   "description": "[![Actions Status](https://github.com/anmord/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/anmord/frontend-project-12/actions)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "npx start-server -s ./frontend/dist"
+
   },
   "repository": {
     "type": "git",
