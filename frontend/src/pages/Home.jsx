@@ -1,7 +1,7 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, fetchMessages } from '../slices/chatSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export const HomePage = () => {
@@ -9,6 +9,7 @@ export const HomePage = () => {
   const dispatch = useDispatch()
   const { channels, messages, loading, error } = useSelector(state => state.chat)
   const token = localStorage.getItem('token')
+  const [newMessage, setNewMessage] = useState('')
 
   if (!token) return <Navigate to="/login" />
 
@@ -36,15 +37,27 @@ export const HomePage = () => {
             {channels.map(channel => <li key={channel.id}>{channel.name}</li>)}
           </ul>
         </div>
-        <div style={{ flex: 1 }}>
-          <h2>Чат</h2>
-          <ul>
-            {messages.map(message => (
-              <li key={message.id}>
-                <b>{message.username}:</b> {message.body}
-              </li>
-            ))}
-          </ul>
+        <div>
+          <div style={{ flex: 1 }}>
+            <h2>Чат</h2>
+            <a>Сообщения</a>
+            <ul>
+              {messages.map(message => (
+                <li key={message.id}>
+                  <b>{message.username}:</b> {message.body}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div style={{ marginTop: '20px' }}>
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Введите сообщение"
+            />
+            <button>Отправить</button>
+          </div>
         </div>
       </div>
     </div>
