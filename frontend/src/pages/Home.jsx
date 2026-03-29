@@ -1,10 +1,22 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const HomePage = () => {
+  const navigate = useNavigate()
   const token = localStorage.getItem('token')
 
   if (!token) {
     return <Navigate to="/login" />
   }
-  return <h1>Домашняя страница</h1>
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/login')
+  }
+
+  return (
+    <div>
+      <h1>Домашняя страница</h1>
+      <button type="submit" onClick={handleLogout}>Back</button>
+    </div>
+  )
 };
