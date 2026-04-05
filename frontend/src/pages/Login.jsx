@@ -23,6 +23,7 @@ export const LoginPage = () => {
             throw new Error('No token received')
           }
           localStorage.setItem('token', token)
+          localStorage.setItem('username', response.data.username)
           navigate('/')
         } catch (err) {
           setErrors({ password: 'Невереный логин или пароль' })
@@ -52,6 +53,7 @@ export const LoginPage = () => {
             <ErrorMessage name="password" component="div" />
           </div>
           <button type="submit">Submit</button>
+          <button type="submit">Register</button>
         </Form>
       )}
     </Formik>
