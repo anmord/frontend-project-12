@@ -53,7 +53,7 @@ export const LoginPage = () => {
             <ErrorMessage name="password" component="div" />
           </div>
           <button type="submit">Submit</button>
-          <button type="submit">Register</button>
+          <button type="button" onClick={() => navigate('/signup')}>Register</button>
         </Form>
       )}
     </Formik>
