@@ -13,6 +13,16 @@ export const SignupPage = () => {
   return (
     <Formik
       initialValues={{ login: "", password: "" }}
+      validate={(values) => {
+        const errors = {}
+        if (!values.login.trim()) {
+          errors.login = 'Введите логин'
+        }
+        if (!values.password.trim()) {
+          errors.password = 'Введите пароль'
+        }
+        return errors
+      }}
       onSubmit={async (values, { setSubmitting, setErrors }) => {
         try {
           const response = await axios.post('/api/v1/signup', {
@@ -35,9 +45,10 @@ export const SignupPage = () => {
         }
       }}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, isValid }) => (
         <Form>
           <div className="form-group">
+            <h1>Регистрация</h1>
             <label htmlFor="login">Login</label>
             <Field
               type="text"
@@ -55,7 +66,8 @@ export const SignupPage = () => {
             />
             <ErrorMessage name="password" component="div" />
           </div>
-          <button type="submit" disabled={isSubmitting}>Submit</button>
+          <button type="submit" disabled={isSubmitting || !isValid}>Submit</button>
+          <button type="button" onClick={() => navigate('/login')}>Signin</button>
         </Form>
       )}
     </Formik>

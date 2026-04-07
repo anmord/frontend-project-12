@@ -41,6 +41,7 @@ export const HomePage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('username')
     navigate('/login')
   }
 
