@@ -69,6 +69,7 @@ export const HomePage = () => {
   return (
     <div>
       <h1>Домашняя страница</h1>
+      <div><a>Ник: {username}</a></div>
       <button type="button" onClick={handleLogout}>Back</button>
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
         <div style={{ width: '200px' }}>
@@ -91,7 +92,6 @@ export const HomePage = () => {
         <div>
           <div style={{ flex: 1 }}>
             <h2>Чат</h2>
-            <a>Сообщения</a>
             <ul>
               {messages.filter(m => m.channelId === activeChannel).map(message => (
                 <li key={message.id}>
