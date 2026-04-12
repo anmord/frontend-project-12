@@ -47,6 +47,7 @@ export const HomePage = () => {
     dispatch(fetchMessages())
     return () => {
       socket.off('newMessage')
+      socket.off('newChannel')
       socket.disconnect()
     }
 
@@ -94,7 +95,7 @@ export const HomePage = () => {
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
         <div style={{ width: '200px' }}>
           <h2>Каналы</h2>
-          <button type="button" onClick={() => setModalOpen(true)}>NewChannel</button>
+          <button type="button" onClick={() => setModalOpen(true)}> + NewChannel</button>
           {isModalOpen && (
             <div style={{
               position: 'fixed',
@@ -103,8 +104,11 @@ export const HomePage = () => {
               width: '100%',
               height: '100%',
               background: 'rgba(0,0,0,0.5)'
-            }}>
+            }}
+              onClick={() => setModalOpen(false)}
+            >
               <Formik
+                enableReinitialize
                 initialValues={{ name: "" }}
                 validationSchema={schema}
                 onSubmit={(values) => {
@@ -119,7 +123,9 @@ export const HomePage = () => {
                       padding: '20px',
                       margin: '100px auto',
                       width: '300px'
-                    }}>
+                    }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <h1>Новый канал</h1>
                       <label htmlFor="name">Имя</label>
                       <Field
@@ -129,8 +135,13 @@ export const HomePage = () => {
                         autoFocus
                       />
                       <ErrorMessage name="name" component="div" />
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                        <button type="button" onClick={() => setModalOpen(false)}>
+                          Отмена
+                        </button>
+                        <button type="submit">Добавить</button>
+                      </div>
                     </div>
-                    <button type="submit">Submit</button>
                   </Form>
                 )}
               </Formik>
