@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel } from '../slices/chatSlice';
+import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel } from '../slices/chatSlice';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client'
 import axios from 'axios'
@@ -17,6 +17,7 @@ export const HomePage = () => {
   const [activeChannel, setActiveChannel] = useState(null)
   const [isModalOpen, setModalOpen] = useState(false)
   const [channelToDelete, setChannelToDelete] = useState(null)
+  const [channelToRename, setChannelToRename] = useState(null)
 
   const schema = yup.object({
     name: yup
@@ -24,9 +25,16 @@ export const HomePage = () => {
       .required('Обязательное поле')
       .min(3, 'От 3 символов')
       .max(20, 'До 20 символов')
-      .test('unique', 'Канал уже существует', (value) => {
+      .test('unique', 'Канал уже существует', function (value) {
         if (!value) return true
-        return !channels.some(c => c.name.toLowerCase() === value.toLowerCase())
+        const isDuplicate = channels.some(
+          c => c.name.toLowerCase() === value.toLowerCase()
+            && c.id !== channelToRename?.id
+        )
+        if (isDuplicate) {
+          return this.createError({ message: 'Канал уже существует' })
+        }
+        return true
       })
   })
 
@@ -46,12 +54,17 @@ export const HomePage = () => {
       setActiveChannel(channel.id)
     })
 
+    socket.on('renameChannel', (channel) => {
+      dispatch(updateChannel(channel))
+    })
+
     dispatch(fetchChannels())
     dispatch(fetchMessages())
 
     return () => {
       socket.off('newMessage')
       socket.off('newChannel')
+      socket.off('renameChannel')
       socket.disconnect()
     }
   }, [dispatch, token])
@@ -188,7 +201,12 @@ export const HomePage = () => {
                 <p>Подтвердите удаление канала</p>
                 <button onClick={() => setChannelToDelete(null)}>Отмена</button>
                 <button onClick={() => {
-                  dispatch(removeChannel(channelToDelete.id))
+                  const deleteId = channelToDelete.id
+                  dispatch(removeChannel(deleteId))
+                  if (deleteId === activeChannel) {
+                    const remaining = channels.filter(c => c.id !== deleteId)
+                    setActiveChannel(remaining[0]?.id || null)
+                  }
                   setChannelToDelete(null)
                 }}>Удалить</button>
               </div>

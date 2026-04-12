@@ -45,6 +45,17 @@ export const removeChannel = createAsyncThunk(
   }
 )
 
+export const renameChannel = createAsyncThunk(
+  'chat/renameChannel',
+  async ({ id, name }) => {
+    const token = localStorage.getItem('token')
+    const response = await axios.patch(`/api/v1/channels/${id}`, { name }, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    return response.data
+  }
+)
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
@@ -61,6 +72,13 @@ const chatSlice = createSlice({
     addChannel: (state, action) => {
       state.channels.push(action.payload)
     },
+    updateChannel: (state, action) => {
+      const updated = action.payload
+      const index = state.channels.findIndex(c => c.id === updated.id)
+      if (index !== -1) {
+        state.channels[index] = updated
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -97,5 +115,5 @@ const chatSlice = createSlice({
   }
 })
 
-export const { addMessage, addChannel } = chatSlice.actions
+export const { addMessage, addChannel, updateChannel } = chatSlice.actions
 export default chatSlice.reducer
