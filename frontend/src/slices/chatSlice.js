@@ -34,10 +34,22 @@ export const createChannel = createAsyncThunk(
   }
 )
 
+export const removeChannel = createAsyncThunk(
+  'chat/removeChannels',
+  async (id) => {
+    const token = localStorage.getItem('token')
+    await axios.delete(`/api/v1/channels/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    return id
+  }
+)
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
     channels: [],
+    currentChannelId: null,
     messages: [],
     loading: false,
     error: null,
@@ -75,6 +87,12 @@ const chatSlice = createSlice({
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message
+      })
+      .addCase(removeChannel.fulfilled, (state, action) => {
+        state.channels = state.channels.filter(c => c.id !== action.payload)
+        if (state.currentChannelId === action.payload) {
+          state.currentChannelId = state.channels[0]?.id || null
+        }
       })
   }
 })

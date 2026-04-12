@@ -1,12 +1,11 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel } from '../slices/chatSlice';
+import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel } from '../slices/chatSlice';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client'
 import axios from 'axios'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as yup from 'yup'
-
 
 export const HomePage = () => {
   const navigate = useNavigate()
@@ -17,6 +16,7 @@ export const HomePage = () => {
   const [newMessage, setNewMessage] = useState('')
   const [activeChannel, setActiveChannel] = useState(null)
   const [isModalOpen, setModalOpen] = useState(false)
+  const [channelToDelete, setChannelToDelete] = useState(null)
 
   const schema = yup.object({
     name: yup
@@ -36,21 +36,24 @@ export const HomePage = () => {
     const socket = io('https://frontend-project-12-5cf7.onrender.com', {
       auth: { token }
     })
+
     socket.on('newMessage', (message) => {
       dispatch(addMessage(message))
     })
+
     socket.on('newChannel', (channel) => {
       dispatch(addChannel(channel))
       setActiveChannel(channel.id)
     })
+
     dispatch(fetchChannels())
     dispatch(fetchMessages())
+
     return () => {
       socket.off('newMessage')
       socket.off('newChannel')
       socket.disconnect()
     }
-
   }, [dispatch, token])
 
   useEffect(() => {
@@ -92,19 +95,23 @@ export const HomePage = () => {
       <h1>Домашняя страница</h1>
       <div><a>Ник: {username}</a></div>
       <button type="button" onClick={handleLogout}>Back</button>
+
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+
         <div style={{ width: '200px' }}>
           <h2>Каналы</h2>
           <button type="button" onClick={() => setModalOpen(true)}> + NewChannel</button>
+
           {isModalOpen && (
-            <div style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              background: 'rgba(0,0,0,0.5)'
-            }}
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: 'rgba(0,0,0,0.5)'
+              }}
               onClick={() => setModalOpen(false)}
             >
               <Formik
@@ -116,14 +123,15 @@ export const HomePage = () => {
                   setModalOpen(false)
                 }}
               >
-                {() => (
+                {({ resetForm }) => (
                   <Form>
-                    <div style={{
-                      background: 'white',
-                      padding: '20px',
-                      margin: '100px auto',
-                      width: '300px'
-                    }}
+                    <div
+                      style={{
+                        background: 'white',
+                        padding: '20px',
+                        margin: '100px auto',
+                        width: '300px'
+                      }}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <h1>Новый канал</h1>
@@ -136,7 +144,13 @@ export const HomePage = () => {
                       />
                       <ErrorMessage name="name" component="div" />
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                        <button type="button" onClick={() => setModalOpen(false)}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            resetForm()
+                            setModalOpen(false)
+                          }}
+                        >
                           Отмена
                         </button>
                         <button type="submit">Добавить</button>
@@ -147,32 +161,51 @@ export const HomePage = () => {
               </Formik>
             </div>
           )}
-          <ul>
+
+          <div>
             {channels.map(channel => (
-              <li
-                key={channel.id}
-                onClick={() => setActiveChannel(channel.id)}
-                style={{
-                  cursor: 'pointer',
-                  fontWeight: channel.id === activeChannel ? 'bold' : 'normal'
-                }}
-              >
-                # {channel.name}
+              <div key={channel.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span
+                  onClick={() => setActiveChannel(channel.id)}
+                  style={{
+                    cursor: 'pointer',
+                    fontWeight: channel.id === activeChannel ? 'bold' : 'normal'
+                  }}
+                >
+                  # {channel.name}
+                </span>
+
+                {channel.removable && (
+                  <button onClick={() => setChannelToDelete(channel)}>⋮</button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {channelToDelete && (
+            <div onClick={() => setChannelToDelete(null)}>
+              <div onClick={(e) => e.stopPropagation()}>
+                <p>Подтвердите удаление канала</p>
+                <button onClick={() => setChannelToDelete(null)}>Отмена</button>
+                <button onClick={() => {
+                  dispatch(removeChannel(channelToDelete.id))
+                  setChannelToDelete(null)
+                }}>Удалить</button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <h2>Чат</h2>
+          <ul>
+            {messages.filter(m => m.channelId === activeChannel).map(message => (
+              <li key={message.id}>
+                <b>{message.username}:</b> {message.body}
               </li>
             ))}
           </ul>
-        </div>
-        <div>
-          <div style={{ flex: 1 }}>
-            <h2>Чат</h2>
-            <ul>
-              {messages.filter(m => m.channelId === activeChannel).map(message => (
-                <li key={message.id}>
-                  <b>{message.username}:</b> {message.body}
-                </li>
-              ))}
-            </ul>
-          </div>
+
           <div style={{ marginTop: '20px' }}>
             <input
               type="text"
@@ -180,10 +213,13 @@ export const HomePage = () => {
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Введите сообщение"
             />
-            <button onClick={handleSendMessage} disabled={!newMessage.trim()}>Отправить</button>
+            <button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+              Отправить
+            </button>
           </div>
         </div>
+
       </div>
-    </div >
+    </div>
   )
-};
+}
