@@ -23,6 +23,17 @@ export const fetchMessages = createAsyncThunk(
   }
 )
 
+export const createChannel = createAsyncThunk(
+  'chat/createChannels',
+  async (newChannel) => {
+    const token = localStorage.getItem('token')
+    const response = await axios.post('/api/v1/channels', newChannel, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    return response.data
+  }
+)
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
@@ -34,7 +45,10 @@ const chatSlice = createSlice({
   reducers: {
     addMessage: (state, action) => {
       state.messages.push(action.payload)
-    }
+    },
+    addChannel: (state, action) => {
+      state.channels.push(action.payload)
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -65,5 +79,5 @@ const chatSlice = createSlice({
   }
 })
 
-export const { addMessage } = chatSlice.actions
+export const { addMessage, addChannel } = chatSlice.actions
 export default chatSlice.reducer
