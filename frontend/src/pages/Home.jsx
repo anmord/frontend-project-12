@@ -71,8 +71,8 @@ export const HomePage = () => {
   }, [dispatch, token])
 
   useEffect(() => {
-    if (channels.length > 0 && !activeChannel) {
-      setActiveChannel(channels[0].id)
+    if (!channels.find(c => c.id === activeChannel)) {
+      setActiveChannel(channels[0]?.id || null)
     }
   }, [channels, activeChannel])
 
