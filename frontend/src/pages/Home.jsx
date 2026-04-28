@@ -18,6 +18,7 @@ export const HomePage = () => {
   const [isModalOpen, setModalOpen] = useState(false)
   const [channelToDelete, setChannelToDelete] = useState(null)
   const [channelToRename, setChannelToRename] = useState(null)
+  const [channelMenu, setChannelMenu] = useState(null)
 
   const schema = yup.object({
     name: yup
@@ -97,6 +98,22 @@ export const HomePage = () => {
       console.error(err)
       alert('Ошибка сети')
     }
+  }
+
+  const overlayStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0,0,0,0.5)'
+  }
+
+  const modalStyle = {
+    background: 'white',
+    padding: '20px',
+    margin: '100px auto',
+    width: '300px'
   }
 
   if (loading) return <div>Выполняется загрузка, пожалуйста подождите</div>
@@ -189,27 +206,111 @@ export const HomePage = () => {
                 </span>
 
                 {channel.removable && (
-                  <button onClick={() => setChannelToDelete(channel)}>⋮</button>
+                  <button onClick={() => setChannelMenu(channel)}>⋮</button>
                 )}
               </div>
             ))}
           </div>
-
-          {channelToDelete && (
-            <div onClick={() => setChannelToDelete(null)}>
-              <div onClick={(e) => e.stopPropagation()}>
-                <p>Подтвердите удаление канала</p>
-                <button onClick={() => setChannelToDelete(null)}>Отмена</button>
+          {channelMenu && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+              }}
+              onClick={() => setChannelMenu(null)}>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100px',
+                  left: '100px',
+                  background: 'white',
+                  padding: '10px',
+                  border: '1px solid #ccc'
+                }}
+                onClick={(e) => e.stopPropagation()}>
                 <button onClick={() => {
-                  const deleteId = channelToDelete.id
-                  dispatch(removeChannel(deleteId))
-                  if (deleteId === activeChannel) {
-                    const remaining = channels.filter(c => c.id !== deleteId)
-                    setActiveChannel(remaining[0]?.id || null)
-                  }
-                  setChannelToDelete(null)
-                }}>Удалить</button>
+                  setChannelToDelete(channelMenu)
+                  setChannelMenu(null)
+                }}>
+                  Удалить
+                </button>
+                <button onClick={() => {
+                  setChannelToRename(channelMenu)
+                  setChannelMenu(null)
+                }}>
+                  Переименовать
+                </button>
               </div>
+            </div>
+          )}
+          {channelToDelete && (
+            <div
+              style={overlayStyle}
+              onClick={() => setChannelToDelete(null)}
+            >
+              <div
+                style={modalStyle}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <p>Подтвердите удаление канала</p>
+
+                <button onClick={() => setChannelToDelete(null)}>
+                  Отмена
+                </button>
+
+                <button onClick={() => {
+                  dispatch(removeChannel(channelToDelete.id))
+                  setChannelToDelete(null)
+                }}>
+                  Удалить
+                </button>
+              </div>
+            </div>
+          )}
+          {channelToRename && (
+            <div
+              style={overlayStyle}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setChannelToRename(null)
+                }
+              }}
+            >
+              <Formik
+                initialValues={{ name: channelToRename.name }}
+                validationSchema={schema}
+                onSubmit={(values) => {
+                  dispatch(renameChannel({
+                    id: channelToRename.id,
+                    name: values.name
+                  }))
+                  setChannelToRename(null)
+                }}
+              >
+                <Form>
+                  <div style={modalStyle}>
+                    <h1>Переименовать канал</h1>
+
+                    <Field name="name" autoFocus />
+                    <ErrorMessage name="name" component="div" />
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setChannelToRename(null)
+                        }}
+                      >
+                        Отмена
+                      </button>
+                      <button type="submit">Сохранить</button>
+                    </div>
+                  </div>
+                </Form>
+              </Formik>
             </div>
           )}
         </div>
