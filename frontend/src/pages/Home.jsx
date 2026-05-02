@@ -123,8 +123,15 @@ export const HomePage = () => {
   return (
     <div>
       <h1>Домашняя страница</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <h2 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+          Hexlet Chat
+        </h2>
+        {token && (
+          <button type="button" onClick={handleLogout}>Выйти</button>
+        )}
+      </div>
       <div><a>Ник: {username}</a></div>
-      <button type="button" onClick={handleLogout}>Back</button>
 
       <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
 
