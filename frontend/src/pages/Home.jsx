@@ -9,6 +9,7 @@ import * as yup from 'yup'
 import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify'
+import filter from '../utils/filter'
 
 export const HomePage = () => {
   const { t } = useTranslation()
@@ -88,8 +89,10 @@ export const HomePage = () => {
 
   const handleSendMessage = async () => {
     try {
+      const cleanedMessage = filter.clean(newMessage)
+
       await axios.post('/api/v1/messages', {
-        body: newMessage,
+        body: cleanedMessage,
         channelId: activeChannel,
         username
       }, {
@@ -155,7 +158,9 @@ export const HomePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={(values) => {
-                    dispatch(createChannel({ name: values.name }))
+                    const cleanedName = filter.clean(values.name)
+
+                    dispatch(createChannel({ name: cleanedName }))
                       .unwrap()
                       .then(() => {
                         toast.success(t('toast.channelCreated'))
@@ -297,9 +302,11 @@ export const HomePage = () => {
                   initialValues={{ name: channelToRename.name }}
                   validationSchema={schema}
                   onSubmit={(values) => {
+                    const cleanedName = filter.clean(values.name)
+
                     dispatch(renameChannel({
                       id: channelToRename.id,
-                      name: values.name
+                      name: cleanedName
                     }))
                       .unwrap()
                       .then(() => toast.success(t('toast.channelRenamed')))
