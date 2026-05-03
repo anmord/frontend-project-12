@@ -127,7 +127,7 @@ export const HomePage = () => {
 
   if (loading) return <div>{t('common.loading')}</div>
   if (!activeChannel) return <div>{t('common.loadingChannel')}</div>
-
+  console.log(import.meta.env.VITE_ROLLBAR_ACCESS_TOKEN)
   return (
     <>
       <Header />
