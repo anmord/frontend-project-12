@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify'
 import filter from '../utils/filter'
+import { useRollbar } from '@rollbar/react'
 
 export const HomePage = () => {
   const { t } = useTranslation()
@@ -24,6 +25,7 @@ export const HomePage = () => {
   const [channelToDelete, setChannelToDelete] = useState(null)
   const [channelToRename, setChannelToRename] = useState(null)
   const [channelMenu, setChannelMenu] = useState(null)
+  const rollbar = useRollbar()
 
   const schema = yup.object({
     name: yup
@@ -137,6 +139,9 @@ export const HomePage = () => {
 
           <div style={{ width: '200px' }}>
             <h2>{t('chat.channels')}</h2>
+            <button onClick={() => rollbar.error('Test error')}>
+              Test error
+            </button>
             <button type="button" onClick={() => setModalOpen(true)}> + {t('chat.newChannel')}</button>
 
             {isModalOpen && (
