@@ -146,12 +146,14 @@ export const HomePage = () => {
                   enableReinitialize
                   initialValues={{ name: "" }}
                   validationSchema={schema}
+                  validateOnBlur={false}
+                  validateOnChange={false}
                   onSubmit={(values) => {
                     dispatch(createChannel({ name: values.name }))
                     setModalOpen(false)
                   }}
                 >
-                  {({ resetForm, setTouched }) => (
+                  {({ resetForm }) => (
                     <Form>
                       <div
                         style={{
@@ -176,7 +178,6 @@ export const HomePage = () => {
                             type="button"
                             onClick={() => {
                               resetForm()
-                              setTouched({})
                               setModalOpen(false)
                             }}
                           >
