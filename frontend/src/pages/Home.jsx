@@ -6,8 +6,11 @@ import { io } from 'socket.io-client'
 import axios from 'axios'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as yup from 'yup'
+import { useTranslation } from 'react-i18next';
+import { Header } from '../components/Header';
 
 export const HomePage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { channels, messages, loading, error } = useSelector(state => state.chat)
@@ -23,17 +26,17 @@ export const HomePage = () => {
   const schema = yup.object({
     name: yup
       .string()
-      .required('Обязательное поле')
-      .min(3, 'От 3 символов')
-      .max(20, 'До 20 символов')
-      .test('unique', 'Канал уже существует', function (value) {
+      .required(t('errors.required'))
+      .min(3, t('errors.min', { count: 3 }))
+      .max(20, t('errors.max', { count: 20 }))
+      .test('unique', t('errors.unique'), function (value) {
         if (!value) return true
         const isDuplicate = channels.some(
           c => c.name.toLowerCase() === value.toLowerCase()
             && c.id !== channelToRename?.id
         )
         if (isDuplicate) {
-          return this.createError({ message: 'Канал уже существует' })
+          return this.createError({ message: t('errors.unique') })
         }
         return true
       })
@@ -76,12 +79,6 @@ export const HomePage = () => {
     }
   }, [channels, activeChannel])
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
-    navigate('/login')
-  }
-
   const handleSendMessage = async () => {
     try {
       await axios.post('/api/v1/messages', {
@@ -96,7 +93,7 @@ export const HomePage = () => {
       setNewMessage('')
     } catch (err) {
       console.error(err)
-      alert('Ошибка сети')
+      alert(t('errors.network'))
     }
   }
 
@@ -116,236 +113,232 @@ export const HomePage = () => {
     width: '300px'
   }
 
-  if (loading) return <div>Выполняется загрузка, пожалуйста подождите</div>
-  if (error) return <div>Ошибка: {error}</div>
-  if (!activeChannel) return <div>Загрузка канала...</div>
+  if (loading) return <div>{t('common.loading')}</div>
+  if (error) return <div>{t('common.error', { message: error })}</div>
+  if (!activeChannel) return <div>{t('common.loadingChannel')}</div>
 
   return (
-    <div>
-      <h1>Домашняя страница</h1>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <h2 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-          Hexlet Chat
-        </h2>
-        {token && (
-          <button type="button" onClick={handleLogout}>Выйти</button>
-        )}
-      </div>
-      <div><a>Ник: {username}</a></div>
+    <>
+      <Header />
+      <div>
+        <h1>{t('homePage')}</h1>
+        <div><a>{t('username', { name: username })}</a></div>
 
-      <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+        <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
 
-        <div style={{ width: '200px' }}>
-          <h2>Каналы</h2>
-          <button type="button" onClick={() => setModalOpen(true)}> + NewChannel</button>
+          <div style={{ width: '200px' }}>
+            <h2>{t('chat.channels')}</h2>
+            <button type="button" onClick={() => setModalOpen(true)}> + {t('chat.newChannel')}</button>
 
-          {isModalOpen && (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'rgba(0,0,0,0.5)'
-              }}
-              onClick={() => setModalOpen(false)}
-            >
-              <Formik
-                enableReinitialize
-                initialValues={{ name: "" }}
-                validationSchema={schema}
-                onSubmit={(values) => {
-                  dispatch(createChannel({ name: values.name }))
-                  setModalOpen(false)
+            {isModalOpen && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(0,0,0,0.5)'
+                }}
+                onClick={() => setModalOpen(false)}
+              >
+                <Formik
+                  enableReinitialize
+                  initialValues={{ name: "" }}
+                  validationSchema={schema}
+                  onSubmit={(values) => {
+                    dispatch(createChannel({ name: values.name }))
+                    setModalOpen(false)
+                  }}
+                >
+                  {({ resetForm, setTouched }) => (
+                    <Form>
+                      <div
+                        style={{
+                          background: 'white',
+                          padding: '20px',
+                          margin: '100px auto',
+                          width: '300px'
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <h1>{t('chat.newChannel')}</h1>
+                        <label htmlFor="name">{t('chat.channelName')}</label>
+                        <Field
+                          type="text"
+                          name="name"
+                          className="form-control"
+                          autoFocus
+                        />
+                        <ErrorMessage name="name" component="div" />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              resetForm()
+                              setTouched({})
+                              setModalOpen(false)
+                            }}
+                          >
+                            {t('chat.cancel')}
+                          </button>
+                          <button type="submit">{t('chat.add')}</button>
+                        </div>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
+            )}
+
+            <div>
+              {channels.map(channel => (
+                <div key={channel.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span
+                    onClick={() => setActiveChannel(channel.id)}
+                    style={{
+                      cursor: 'pointer',
+                      fontWeight: channel.id === activeChannel ? 'bold' : 'normal'
+                    }}
+                  >
+                    # {channel.name}
+                  </span>
+
+                  {channel.removable && (
+                    <button onClick={() => setChannelMenu(channel)}>⋮</button>
+                  )}
+                </div>
+              ))}
+            </div>
+            {channelMenu && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                }}
+                onClick={() => setChannelMenu(null)}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '100px',
+                    left: '100px',
+                    background: 'white',
+                    padding: '10px',
+                    border: '1px solid #ccc'
+                  }}
+                  onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => {
+                    setChannelToDelete(channelMenu)
+                    setChannelMenu(null)
+                  }}>
+                    {t('chat.delete')}
+                  </button>
+                  <button onClick={() => {
+                    setChannelToRename(channelMenu)
+                    setChannelMenu(null)
+                  }}>
+                    {t('chat.rename')}
+                  </button>
+                </div>
+              </div>
+            )}
+            {channelToDelete && (
+              <div
+                style={overlayStyle}
+                onClick={() => setChannelToDelete(null)}
+              >
+                <div
+                  style={modalStyle}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p>{t('chat.confirmDeletion')}</p>
+
+                  <button onClick={() => setChannelToDelete(null)}>
+                    {t('chat.cancel')}
+                  </button>
+
+                  <button onClick={() => {
+                    dispatch(removeChannel(channelToDelete.id))
+                    setChannelToDelete(null)
+                  }}>
+                    {t('chat.delete')}
+                  </button>
+                </div>
+              </div>
+            )}
+            {channelToRename && (
+              <div
+                style={overlayStyle}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) {
+                    setChannelToRename(null)
+                  }
                 }}
               >
-                {({ resetForm }) => (
+                <Formik
+                  initialValues={{ name: channelToRename.name }}
+                  validationSchema={schema}
+                  onSubmit={(values) => {
+                    dispatch(renameChannel({
+                      id: channelToRename.id,
+                      name: values.name
+                    }))
+                    setChannelToRename(null)
+                  }}
+                >
                   <Form>
-                    <div
-                      style={{
-                        background: 'white',
-                        padding: '20px',
-                        margin: '100px auto',
-                        width: '300px'
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <h1>Новый канал</h1>
-                      <label htmlFor="name">Имя</label>
-                      <Field
-                        type="text"
-                        name="name"
-                        className="form-control"
-                        autoFocus
-                      />
+                    <div style={modalStyle}>
+                      <h1>{t('chat.rename')}</h1>
+
+                      <Field name="name" autoFocus />
                       <ErrorMessage name="name" component="div" />
+
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                         <button
                           type="button"
                           onClick={() => {
-                            resetForm()
-                            setModalOpen(false)
+                            setChannelToRename(null)
                           }}
                         >
-                          Отмена
+                          {t('chat.cancel')}
                         </button>
-                        <button type="submit">Добавить</button>
+                        <button type="submit">{t('save')}</button>
                       </div>
                     </div>
                   </Form>
-                )}
-              </Formik>
-            </div>
-          )}
-
-          <div>
-            {channels.map(channel => (
-              <div key={channel.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span
-                  onClick={() => setActiveChannel(channel.id)}
-                  style={{
-                    cursor: 'pointer',
-                    fontWeight: channel.id === activeChannel ? 'bold' : 'normal'
-                  }}
-                >
-                  # {channel.name}
-                </span>
-
-                {channel.removable && (
-                  <button onClick={() => setChannelMenu(channel)}>⋮</button>
-                )}
+                </Formik>
               </div>
-            ))}
+            )}
           </div>
-          {channelMenu && (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-              }}
-              onClick={() => setChannelMenu(null)}>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '100px',
-                  left: '100px',
-                  background: 'white',
-                  padding: '10px',
-                  border: '1px solid #ccc'
-                }}
-                onClick={(e) => e.stopPropagation()}>
-                <button onClick={() => {
-                  setChannelToDelete(channelMenu)
-                  setChannelMenu(null)
-                }}>
-                  Удалить
-                </button>
-                <button onClick={() => {
-                  setChannelToRename(channelMenu)
-                  setChannelMenu(null)
-                }}>
-                  Переименовать
-                </button>
-              </div>
+
+          <div style={{ flex: 1 }}>
+            <h2>{t('chat.chat')}</h2>
+            <ul>
+              {messages.filter(m => m.channelId === activeChannel).map(message => (
+                <li key={message.id}>
+                  <b>{message.username}:</b> {message.body}
+                </li>
+              ))}
+            </ul>
+
+            <div style={{ marginTop: '20px' }}>
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder={t('chat.messagePlaceholder')}
+              />
+              <button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+                {t('form.submit')}
+              </button>
             </div>
-          )}
-          {channelToDelete && (
-            <div
-              style={overlayStyle}
-              onClick={() => setChannelToDelete(null)}
-            >
-              <div
-                style={modalStyle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <p>Подтвердите удаление канала</p>
-
-                <button onClick={() => setChannelToDelete(null)}>
-                  Отмена
-                </button>
-
-                <button onClick={() => {
-                  dispatch(removeChannel(channelToDelete.id))
-                  setChannelToDelete(null)
-                }}>
-                  Удалить
-                </button>
-              </div>
-            </div>
-          )}
-          {channelToRename && (
-            <div
-              style={overlayStyle}
-              onClick={(e) => {
-                if (e.target === e.currentTarget) {
-                  setChannelToRename(null)
-                }
-              }}
-            >
-              <Formik
-                initialValues={{ name: channelToRename.name }}
-                validationSchema={schema}
-                onSubmit={(values) => {
-                  dispatch(renameChannel({
-                    id: channelToRename.id,
-                    name: values.name
-                  }))
-                  setChannelToRename(null)
-                }}
-              >
-                <Form>
-                  <div style={modalStyle}>
-                    <h1>Переименовать канал</h1>
-
-                    <Field name="name" autoFocus />
-                    <ErrorMessage name="name" component="div" />
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setChannelToRename(null)
-                        }}
-                      >
-                        Отмена
-                      </button>
-                      <button type="submit">Сохранить</button>
-                    </div>
-                  </div>
-                </Form>
-              </Formik>
-            </div>
-          )}
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <h2>Чат</h2>
-          <ul>
-            {messages.filter(m => m.channelId === activeChannel).map(message => (
-              <li key={message.id}>
-                <b>{message.username}:</b> {message.body}
-              </li>
-            ))}
-          </ul>
-
-          <div style={{ marginTop: '20px' }}>
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Введите сообщение"
-            />
-            <button onClick={handleSendMessage} disabled={!newMessage.trim()}>
-              Отправить
-            </button>
           </div>
-        </div>
 
+        </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -2,8 +2,11 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import * as yup from 'yup'
+import { Header } from '../components/Header';
+import { useTranslation } from 'react-i18next';
 
 export const SignupPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
 
@@ -11,40 +14,25 @@ export const SignupPage = () => {
     return <Navigate to="/" />
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
-    navigate('/login')
-  }
-
   const schema = yup.object({
     login: yup
       .string()
-      .required('Обязательное поле')
-      .min(3, 'От 3 символов')
-      .max(20, 'До 20 символов'),
+      .required(t('errors.required'))
+      .min(3, t('errors.min', { count: 3 }))
+      .max(20, t('errors.max', { count: 20 })),
     password: yup
       .string()
-      .required('Обязательное поле')
-      .min(6, 'От 6 символов'),
+      .required(t('errors.required'))
+      .min(6, t('errors.min', { count: 6 })),
     confirmPassword: yup
       .string()
-      .required('Обязательное поле')
-      .oneOf([yup.ref('password')], 'Пароли должны совпадать'),
+      .required(t('errors.required'))
+      .oneOf([yup.ref('password')], t('errors.oneOf')),
   })
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <h2 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-          Hexlet Chat
-        </h2>
-        {token && (
-          <button onClick={handleLogout}>
-            Выйти
-          </button>
-        )}
-      </div>
+      <Header />
       <Formik
         initialValues={{ login: "", password: "", confirmPassword: "" }}
         validationSchema={schema}
@@ -61,10 +49,10 @@ export const SignupPage = () => {
             navigate('/')
           } catch (err) {
             if (err.response?.status === 409) {
-              setErrors({ login: 'Пользователь уже существует' })
+              setErrors({ login: t('errors.userExists') })
               console.log(err)
             } else {
-              setErrors({ password: 'Ошибка сети или сервера' })
+              setErrors({ password: t('errors.network') })
             }
           } finally {
             setSubmitting(false)
@@ -74,8 +62,8 @@ export const SignupPage = () => {
         {({ isSubmitting, isValid }) => (
           <Form>
             <div className="form-group">
-              <h1>Регистрация</h1>
-              <label htmlFor="login">Login</label>
+              <h1>{t('signup')}</h1>
+              <label htmlFor="login">{t('labelLogin')}</label>
               <Field
                 type="text"
                 name="login"
@@ -84,7 +72,7 @@ export const SignupPage = () => {
               <ErrorMessage name="login" component="div" />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t('labelPassword')}</label>
               <Field
                 type="password"
                 name="password"
@@ -93,7 +81,7 @@ export const SignupPage = () => {
               <ErrorMessage name="password" component="div" />
             </div>
             <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password</label>
+              <label htmlFor="confirmPassword">{t('form.confirmPassword')}</label>
               <Field
                 type="password"
                 name="confirmPassword"
@@ -101,8 +89,8 @@ export const SignupPage = () => {
               />
               <ErrorMessage name="confirmPassword" component="div" />
             </div>
-            <button type="submit" disabled={isSubmitting || !isValid}>Submit</button>
-            <button type="button" onClick={() => navigate('/login')}>Signin</button>
+            <button type="submit" disabled={isSubmitting || !isValid}>{t('signup')}</button>
+            <button type="button" onClick={() => navigate('/login')}>{t('login')}</button>
           </Form>
         )}
       </Formik>

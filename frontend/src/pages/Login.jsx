@@ -1,8 +1,11 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios'
+import { useTranslation } from 'react-i18next';
+import { Header } from '../components/Header';
 
 export const LoginPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
 
@@ -10,34 +13,19 @@ export const LoginPage = () => {
     return <Navigate to="/" />
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
-    navigate('/login')
-  }
-
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <h2 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-          Hexlet Chat
-        </h2>
-        {token && (
-          <button onClick={handleLogout}>
-            Выйти
-          </button>
-        )}
-      </div>
+      <Header />
       <Formik
         initialValues={{ login: "", password: "" }}
 
         validate={(values) => {
           const errors = {}
           if (!values.login.trim()) {
-            errors.login = 'Введите логин'
+            errors.login = t('errors.login')
           }
           if (!values.password.trim()) {
-            errors.password = 'Введите пароль'
+            errors.password = t('errors.password')
           }
           return errors
         }}
@@ -55,7 +43,7 @@ export const LoginPage = () => {
             localStorage.setItem('username', response.data.username)
             navigate('/')
           } catch (err) {
-            setErrors({ password: 'Неверный логин или пароль' })
+            setErrors({ password: t('errors.authFailed') })
             console.log(err)
           } finally {
             setSubmitting(false)
@@ -65,8 +53,8 @@ export const LoginPage = () => {
         {() => (
           <Form>
             <div className="form-group">
-              <h1>Вход</h1>
-              <label htmlFor="login">Login</label>
+              <h1>{t('login')}</h1>
+              <label htmlFor="login">{t('labelLogin')}</label>
               <Field
                 type="text"
                 name="login"
@@ -75,7 +63,7 @@ export const LoginPage = () => {
               <ErrorMessage name="login" component="div" />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t('labelPassword')}</label>
               <Field
                 type="password"
                 name="password"
@@ -83,8 +71,8 @@ export const LoginPage = () => {
               />
               <ErrorMessage name="password" component="div" />
             </div>
-            <button type="submit">Войти</button>
-            <button type="button" onClick={() => navigate('/signup')}>Регистрация</button>
+            <button type="submit">{t('login')}</button>
+            <button type="button" onClick={() => navigate('/signup')}>{t('signup')}</button>
           </Form>
         )}
       </Formik>
