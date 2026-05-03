@@ -8,6 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as yup from 'yup'
 import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
+import { toast } from 'react-toastify'
 
 export const HomePage = () => {
   const { t } = useTranslation()
@@ -79,6 +80,12 @@ export const HomePage = () => {
     }
   }, [channels, activeChannel])
 
+  useEffect(() => {
+    if (error) {
+      toast.error(t('toast.loadError'))
+    }
+  }, [error, t])
+
   const handleSendMessage = async () => {
     try {
       await axios.post('/api/v1/messages', {
@@ -93,7 +100,7 @@ export const HomePage = () => {
       setNewMessage('')
     } catch (err) {
       console.error(err)
-      alert(t('errors.network'))
+      toast.error(t('toast.networkError'))
     }
   }
 
@@ -114,7 +121,6 @@ export const HomePage = () => {
   }
 
   if (loading) return <div>{t('common.loading')}</div>
-  if (error) return <div>{t('common.error', { message: error })}</div>
   if (!activeChannel) return <div>{t('common.loadingChannel')}</div>
 
   return (
@@ -150,7 +156,12 @@ export const HomePage = () => {
                   validateOnChange={false}
                   onSubmit={(values) => {
                     dispatch(createChannel({ name: values.name }))
-                    setModalOpen(false)
+                      .unwrap()
+                      .then(() => {
+                        toast.success(t('toast.channelCreated'))
+                        setModalOpen(false)
+                      })
+                      .catch(() => toast.error(t('toast.networkError')))
                   }}
                 >
                   {({ resetForm }) => (
@@ -263,6 +274,9 @@ export const HomePage = () => {
 
                   <button onClick={() => {
                     dispatch(removeChannel(channelToDelete.id))
+                      .unwrap()
+                      .then(() => toast.success(t('toast.channelRemoved')))
+                      .catch(() => toast.error(t('toast.networkError')))
                     setChannelToDelete(null)
                   }}>
                     {t('chat.delete')}
@@ -287,6 +301,9 @@ export const HomePage = () => {
                       id: channelToRename.id,
                       name: values.name
                     }))
+                      .unwrap()
+                      .then(() => toast.success(t('toast.channelRenamed')))
+                      .catch(() => toast.error(t('toast.networkError')))
                     setChannelToRename(null)
                   }}
                 >

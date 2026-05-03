@@ -54,6 +54,14 @@ const resources = {
         loadingChannel: 'Загрузка канала...',
         error: 'Ошибка: {{message}}',
       },
+
+      toast: {
+        networkError: 'Ошибка сети',
+        loadError: 'Ошибка загрузки данных',
+        channelCreated: 'Канала создан',
+        channelRemoved: 'Канал удален',
+        channelRenamed: 'Канал переименован',
+      },
     },
   },
 }
