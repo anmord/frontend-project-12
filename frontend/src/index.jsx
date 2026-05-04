@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
 import { store } from './store.js'
-import './i18n'
+import './i18n.js'
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react'
 
 const rollbarConfig = {
@@ -12,7 +12,7 @@ const rollbarConfig = {
   captureUncaught: true,
   captureUnhandledRejections: true,
 }
-console.log(rollbarConfig.environment)
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RollbarProvider config={rollbarConfig}>
