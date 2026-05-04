@@ -117,7 +117,6 @@ export const HomePage = () => {
     height: '100%',
     background: 'rgba(0,0,0,0.5)'
   }
-
   const modalStyle = {
     background: 'white',
     padding: '20px',
