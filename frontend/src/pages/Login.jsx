@@ -3,11 +3,14 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
+import { useRollbar } from '@rollbar/react'
+import { toast } from 'react-toastify'
 
 export const LoginPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
+  const rollbar = useRollbar()
 
   if (token) {
     return <Navigate to="/" />
@@ -43,8 +46,12 @@ export const LoginPage = () => {
             localStorage.setItem('username', response.data.username)
             navigate('/')
           } catch (err) {
-            setErrors({ password: t('errors.authFailed') })
-            console.log(err)
+            if (err.response?.status === 401) {
+              setErrors({ password: t('errors.authFailed') })
+            } else {
+              toast.error(t('toast.networkError'))
+              rollbar.error(err)
+            }
           } finally {
             setSubmitting(false)
           }

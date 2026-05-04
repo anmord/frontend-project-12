@@ -12,7 +12,7 @@ const rollbarConfig = {
   captureUncaught: true,
   captureUnhandledRejections: true,
 }
-
+console.log(rollbarConfig.environment)
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RollbarProvider config={rollbarConfig}>

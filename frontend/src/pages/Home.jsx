@@ -127,7 +127,7 @@ export const HomePage = () => {
 
   if (loading) return <div>{t('common.loading')}</div>
   if (!activeChannel) return <div>{t('common.loadingChannel')}</div>
-  console.log(import.meta.env.VITE_ROLLBAR_ACCESS_TOKEN)
+
   return (
     <>
       <Header />
@@ -139,9 +139,6 @@ export const HomePage = () => {
 
           <div style={{ width: '200px' }}>
             <h2>{t('chat.channels')}</h2>
-            <button onClick={() => rollbar.error('Test error')}>
-              Test error
-            </button>
             <button type="button" onClick={() => setModalOpen(true)}> + {t('chat.newChannel')}</button>
 
             {isModalOpen && (
