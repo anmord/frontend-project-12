@@ -3,4 +3,4 @@ build:
 start:
 	npm run start
 install:
-	npm ci
+	cd ../frontend && npm install
