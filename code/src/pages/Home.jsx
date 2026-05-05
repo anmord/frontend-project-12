@@ -6,7 +6,7 @@ import { io } from 'socket.io-client'
 import axios from 'axios'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as yup from 'yup'
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../node_modules/react-i18next';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify'
 import filter from '../utils/filter'

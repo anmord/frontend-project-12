@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import * as yup from 'yup'
 import { Header } from '../components/Header';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../node_modules/react-i18next';
 
 export const SignupPage = () => {
   const { t } = useTranslation()
