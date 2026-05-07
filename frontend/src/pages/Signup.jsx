@@ -89,7 +89,7 @@ export const SignupPage = () => {
               />
               <ErrorMessage name="confirmPassword" component="div" />
             </div>
-            <button type="submit" disabled={isSubmitting || !isValid}>{t('signup')}</button>
+            <button type="submit" disabled={isSubmitting || !isValid}>{t('signupButton')}</button>
             <button type="button" onClick={() => navigate('/login')}>{t('login')}</button>
           </Form>
         )}

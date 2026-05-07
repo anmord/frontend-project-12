@@ -7,6 +7,7 @@ const resources = {
       appName: 'Hexlet Chat',
       login: 'Вход',
       signup: 'Регистрация',
+      signupButton: 'Зарегистрироваться',
       logout: 'Выйти',
       homePage: 'Домашняя страница',
       username: 'Ник: {{name}}',
