@@ -5,6 +5,7 @@ import { useTranslation } from '../../node_modules/react-i18next';
 import { Header } from '../components/Header';
 import { useRollbar } from '@rollbar/react'
 import { toast } from 'react-toastify'
+import { Link } from "react-router-dom";
 
 export const LoginPage = () => {
   const { t } = useTranslation()
@@ -79,7 +80,7 @@ export const LoginPage = () => {
               <ErrorMessage name="password" component="div" />
             </div>
             <button type="submit">{t('login')}</button>
-            <button type="button" onClick={() => navigate('/signup')}>{t('signup')}</button>
+            <Link to="/signup">{t('signup')}</Link>
           </Form>
         )}
       </Formik>
