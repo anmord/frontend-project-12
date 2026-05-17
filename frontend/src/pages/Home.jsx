@@ -49,7 +49,8 @@ export const HomePage = () => {
   if (!token) return <Navigate to="/login" />
 
   useEffect(() => {
-    const socket = io('https://frontend-project-12-5cf7.onrender.com', {
+    /* 'https://frontend-project-12-5cf7.onrender.com' */
+    const socket = io({
       auth: { token }
     })
 
