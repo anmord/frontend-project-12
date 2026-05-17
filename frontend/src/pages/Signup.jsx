@@ -36,7 +36,6 @@ export const SignupPage = () => {
       <Formik
         initialValues={{ login: "", password: "", confirmPassword: "" }}
         validationSchema={schema}
-        validateOnMount
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
             const response = await axios.post('/api/v1/signup', {
@@ -59,7 +58,7 @@ export const SignupPage = () => {
           }
         }}
       >
-        {({ isSubmitting, isValid }) => (
+        {({ isSubmitting }) => (
           <Form>
             <div className="form-group">
               <h1>{t('signup')}</h1>
@@ -89,8 +88,7 @@ export const SignupPage = () => {
               />
               <ErrorMessage name="confirmPassword" component="div" />
             </div>
-            <button type="submit" disabled={isSubmitting || !isValid}>{t('signupButton')}</button>
-            <button type="button" onClick={() => navigate('/login')}>{t('login')}</button>
+            <button type="submit" disabled={isSubmitting}>{t('signupButton')}</button>
           </Form>
         )}
       </Formik>
