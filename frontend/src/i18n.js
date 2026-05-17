@@ -12,13 +12,13 @@ const resources = {
       homePage: 'Домашняя страница',
       username: 'Ник: {{name}}',
       save: 'Сохранить',
-      labelLogin: 'Логин',
+      labelLogin: 'Имя пользователя',
       labelPassword: 'Пароль',
 
       form: {
         username: 'Имя пользователя',
         password: 'Пароль',
-        confirmPassword: 'Подтверждение пароля',
+        confirmPassword: 'Подтвердите пароль',
         submit: 'Отправить',
       },
 
