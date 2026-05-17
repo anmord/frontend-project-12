@@ -220,7 +220,8 @@ export const HomePage = () => {
                       fontWeight: channel.id === activeChannel ? 'bold' : 'normal'
                     }}
                   >
-                    # {channel.name}
+                    <span>#</span>
+                    {channel.name}
                   </button>
 
                   {channel.removable && (
