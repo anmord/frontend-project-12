@@ -212,7 +212,8 @@ export const HomePage = () => {
             <div>
               {channels.map(channel => (
                 <div key={channel.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span
+                  <button
+                    type="button"
                     onClick={() => setActiveChannel(channel.id)}
                     style={{
                       cursor: 'pointer',
@@ -220,7 +221,7 @@ export const HomePage = () => {
                     }}
                   >
                     # {channel.name}
-                  </span>
+                  </button>
 
                   {channel.removable && (
                     <button onClick={() => setChannelMenu(channel)}>⋮</button>
