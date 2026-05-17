@@ -6,7 +6,7 @@ import { io } from 'socket.io-client'
 import axios from 'axios'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as yup from 'yup'
-import { useTranslation } from '../../node_modules/react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify'
 import filter from '../utils/filter'
@@ -126,7 +126,10 @@ export const HomePage = () => {
   }
 
   if (loading) return <div>{t('common.loading')}</div>
-  if (!activeChannel) return <div>{t('common.loadingChannel')}</div>
+  /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
+  const currentMessages = messages.filter(
+    m => m.channelId === activeChannel
+  )
 
   return (
     <>
@@ -346,7 +349,7 @@ export const HomePage = () => {
           <div style={{ flex: 1 }}>
             <h2>{t('chat.chat')}</h2>
             <ul>
-              {messages.filter(m => m.channelId === activeChannel).map(message => (
+              {currentMessages.map(message => (
                 <li key={message.id}>
                   <b>{message.username}:</b> {message.body}
                 </li>
