@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import * as yup from 'yup'
 import { Header } from '../components/Header';
-import { useTranslation } from '../../node_modules/react-i18next';
+import { useTranslation } from 'react-i18next';
 
 export const SignupPage = () => {
   const { t } = useTranslation()
@@ -15,7 +15,7 @@ export const SignupPage = () => {
   }
 
   const schema = yup.object({
-    login: yup
+    username: yup
       .string()
       .required(t('errors.required'))
       .min(3, t('errors.min', { count: 3 }))
@@ -34,12 +34,12 @@ export const SignupPage = () => {
     <>
       <Header />
       <Formik
-        initialValues={{ login: "", password: "", confirmPassword: "" }}
+        initialValues={{ username: "", password: "", confirmPassword: "" }}
         validationSchema={schema}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
             const response = await axios.post('/api/v1/signup', {
-              username: values.login,
+              username: values.username,
               password: values.password,
             })
             const token = response.data.token
@@ -48,7 +48,7 @@ export const SignupPage = () => {
             navigate('/')
           } catch (err) {
             if (err.response?.status === 409) {
-              setErrors({ login: t('errors.userExists') })
+              setErrors({ username: t('errors.userExists') })
               console.log(err)
             } else {
               setErrors({ password: t('errors.network') })
@@ -62,17 +62,19 @@ export const SignupPage = () => {
           <Form>
             <div className="form-group">
               <h1>{t('signup')}</h1>
-              <label htmlFor="login">{t('labelLogin')}</label>
+              <label htmlFor="username">{t('labelLogin')}</label>
               <Field
+                id="username"
                 type="text"
-                name="login"
+                name="username"
                 className="form-control"
               />
-              <ErrorMessage name="login" component="div" />
+              <ErrorMessage name="username" component="div" />
             </div>
             <div className="form-group">
               <label htmlFor="password">{t('labelPassword')}</label>
               <Field
+                id="password"
                 type="password"
                 name="password"
                 className="form-control"
@@ -82,6 +84,7 @@ export const SignupPage = () => {
             <div className="form-group">
               <label htmlFor="confirmPassword">{t('form.confirmPassword')}</label>
               <Field
+                id="confirmPassword"
                 type="password"
                 name="confirmPassword"
                 className="form-control"

@@ -1,7 +1,7 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from 'axios'
-import { useTranslation } from '../../node_modules/react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
 import { useRollbar } from '@rollbar/react'
 import { toast } from 'react-toastify'
