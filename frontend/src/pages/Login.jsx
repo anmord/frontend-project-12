@@ -64,6 +64,7 @@ export const LoginPage = () => {
               <h1>{t('login')}</h1>
               <label htmlFor="username">{t('labelLogin')}</label>
               <Field
+                id="username"
                 type="text"
                 name="username"
                 className="form-control"
@@ -73,6 +74,7 @@ export const LoginPage = () => {
             <div className="form-group">
               <label htmlFor="password">{t('labelPassword')}</label>
               <Field
+                id="password"
                 type="password"
                 name="password"
                 className="form-control"
