@@ -18,12 +18,12 @@ export const SignupPage = () => {
     username: yup
       .string()
       .required(t('errors.required'))
-      .min(3, t('errors.min', { count: 3 }))
-      .max(20, t('errors.max', { count: 20 })),
+      .min(3, t('errors.minMax'))
+      .max(20, t('errors.minMax')),
     password: yup
       .string()
       .required(t('errors.required'))
-      .min(6, t('errors.min', { count: 6 })),
+      .min(6, t('errors.min')),
     confirmPassword: yup
       .string()
       .required(t('errors.required'))
