@@ -361,6 +361,11 @@ export const HomePage = () => {
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && newMessage.trim()) {
+                    handleSendMessage()
+                  }
+                }}
                 placeholder={t('chat.messagePlaceholder')}
               />
               <button onClick={handleSendMessage} disabled={!newMessage.trim()}>
