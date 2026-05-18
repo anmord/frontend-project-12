@@ -21,12 +21,12 @@ export const LoginPage = () => {
     <>
       <Header />
       <Formik
-        initialValues={{ login: "", password: "" }}
+        initialValues={{ username: "", password: "" }}
 
         validate={(values) => {
           const errors = {}
-          if (!values.login.trim()) {
-            errors.login = t('errors.login')
+          if (!values.username.trim()) {
+            errors.username = t('errors.login')
           }
           if (!values.password.trim()) {
             errors.password = t('errors.password')
@@ -36,7 +36,7 @@ export const LoginPage = () => {
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
             const response = await axios.post('/api/v1/login', {
-              username: values.login,
+              username: values.username,
               password: values.password,
             })
             const token = response.data.token
@@ -62,13 +62,13 @@ export const LoginPage = () => {
           <Form>
             <div className="form-group">
               <h1>{t('login')}</h1>
-              <label htmlFor="login">{t('labelLogin')}</label>
+              <label htmlFor="username">{t('labelLogin')}</label>
               <Field
                 type="text"
-                name="login"
+                name="username"
                 className="form-control"
               />
-              <ErrorMessage name="login" component="div" />
+              <ErrorMessage name="username" component="div" />
             </div>
             <div className="form-group">
               <label htmlFor="password">{t('labelPassword')}</label>
