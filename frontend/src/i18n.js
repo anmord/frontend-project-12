@@ -12,7 +12,8 @@ const resources = {
       homePage: 'Домашняя страница',
       username: 'Ник: {{name}}',
       save: 'Сохранить',
-      labelLogin: 'Имя пользователя',
+      labelLogup: 'Имя пользователя',
+      labelLogin: 'Ваш ник',
       labelPassword: 'Пароль',
 
       form: {

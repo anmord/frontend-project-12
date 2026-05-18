@@ -62,7 +62,7 @@ export const SignupPage = () => {
           <Form>
             <div className="form-group">
               <h1>{t('signup')}</h1>
-              <label htmlFor="username">{t('labelLogin')}</label>
+              <label htmlFor="username">{t('labelLogup')}</label>
               <Field
                 id="username"
                 type="text"
