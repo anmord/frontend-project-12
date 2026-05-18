@@ -24,7 +24,7 @@ const resources = {
 
       errors: {
         required: 'Обязательное поле',
-        userExists: 'Пользователь уже существует',
+        userExists: 'Такой пользователь уже существует',
         authFailed: 'Неверный логин или пароль',
         min: 'От {{count}} символов',
         max: 'До {{count}} символов',
