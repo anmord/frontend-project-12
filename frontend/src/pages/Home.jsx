@@ -29,7 +29,7 @@ export const HomePage = () => {
       .string()
       .required(t('errors.required'))
       .min(3, t('errors.minMax'))
-      .max(20, t('errors.maxMax'))
+      .max(20, t('errors.minMax'))
       .test('unique', t('errors.unique'), function (value) {
         if (!value) return true
         const isDuplicate = channels.some(
