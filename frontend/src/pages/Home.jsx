@@ -47,7 +47,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     /* 'https://frontend-project-12-5cf7.onrender.com' */
-    const socket = io('/', {
+    const socket = io('/ws', {
       auth: { token }
     })
 
@@ -169,7 +169,7 @@ export const HomePage = () => {
 
                     dispatch(createChannel({ name: cleanedName }))
                       .unwrap()
-                      .then(() => {
+                      .then((channel) => {
                         setActiveChannel(channel.id)
                         toast.success(t('toast.channelCreated'))
                         setModalOpen(false)
@@ -189,9 +189,9 @@ export const HomePage = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <h1>{t('chat.newChannel')}</h1>
-                        <label htmlFor="name">{t('chat.channelName')}</label>
                         <Field
-                          id="name"
+                          id="channelName"
+                          aria-label={t('chat.channelName')}
                           type="text"
                           name="name"
                           className="form-control"
@@ -329,7 +329,7 @@ export const HomePage = () => {
                     <div style={modalStyle}>
                       <h1>{t('chat.rename')}</h1>
 
-                      <Field name="name" name="name" autoFocus />
+                      <Field id="renameChannel" aria-label={t('chat.channelName')} name="name" autoFocus />
                       <ErrorMessage name="name" component="div" />
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
