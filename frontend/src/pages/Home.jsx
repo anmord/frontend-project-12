@@ -133,7 +133,7 @@ export const HomePage = () => {
     m => String(m.channelId) === String(activeChannel)
   )
 
-  const normalizeName = (name) => filter.clean(name, '*****')
+  const normalizeName = (name) => filter.clean(name)
 
   return (
     <>
@@ -233,7 +233,7 @@ export const HomePage = () => {
                     }}
                   >
                     <span># </span>
-                    <span>{channel.name}</span>
+                    <span>{normalizeName(channel.name)}</span>
                   </button>
 
                   {channel.removable && (
