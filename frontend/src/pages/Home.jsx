@@ -94,7 +94,7 @@ export const HomePage = () => {
 
   const handleSendMessage = async () => {
     try {
-      const cleanedMessage = filter.clean(newMessage).replace(/\*+/g, '*****')
+      const cleanedMessage = filter.clean(newMessage)
 
       await axios.post('/api/v1/messages', {
         body: cleanedMessage,
@@ -133,6 +133,8 @@ export const HomePage = () => {
     m => String(m.channelId) === String(activeChannel)
   )
 
+  const normalizeName = (name) => filter.clean(name, '*****')
+
   return (
     <>
       <Header />
@@ -165,9 +167,8 @@ export const HomePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={(values) => {
-                    const cleanedName = filter.clean(values.name).replace(/\*+/g, '*****')
 
-                    dispatch(createChannel({ name: cleanedName }))
+                    dispatch(createChannel({ name: normalizeName(values.name) }))
                       .unwrap()
                       .then((channel) => {
                         setActiveChannel(channel.id)
@@ -316,11 +317,10 @@ export const HomePage = () => {
                   initialValues={{ name: channelToRename.name }}
                   validationSchema={schema}
                   onSubmit={(values) => {
-                    const cleanedName = filter.clean(values.name)
 
                     dispatch(renameChannel({
                       id: channelToRename.id,
-                      name: cleanedName
+                      name: normalizeName(values.name)
                     }))
                       .unwrap()
                       .then(() => toast.success(t('toast.channelRenamed')))
