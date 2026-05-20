@@ -128,7 +128,7 @@ export const HomePage = () => {
   if (loading) return <div>{t('common.loading')}</div>
   /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
   const currentMessages = messages.filter(
-    m => m.channelId === activeChannel
+    m => String(m.channelId) === String(activeChannel)
   )
 
   return (
