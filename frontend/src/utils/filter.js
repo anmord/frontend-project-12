@@ -1,6 +1,7 @@
 import leoProfanity from 'leo-profanity'
 
 leoProfanity.loadDictionary('ru')
-leoProfanity.add(['блин'])
 
-export default leoProfanity
+const clean = (text) => leoProfanity.clean(text).replace(/\*\*\*/g, '*****')
+
+export default { clean }

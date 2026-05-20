@@ -133,8 +133,6 @@ export const HomePage = () => {
     m => String(m.channelId) === String(activeChannel)
   )
 
-  const normalizeName = (name) => filter.clean(name)
-
   return (
     <>
       <Header />
@@ -167,8 +165,8 @@ export const HomePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={(values) => {
-
-                    dispatch(createChannel({ name: values.name }))
+                    const cleaned = filter.clean(values.name)
+                    dispatch(createChannel({ name: cleaned }))
                       .unwrap()
                       .then((channel) => {
                         setActiveChannel(channel.id)
@@ -233,7 +231,7 @@ export const HomePage = () => {
                     }}
                   >
                     <span># </span>
-                    <span>{normalizeName(channel.name)}</span>
+                    <span>{channel.name}</span>
                   </button>
 
                   {channel.removable && (
@@ -320,7 +318,7 @@ export const HomePage = () => {
 
                     dispatch(renameChannel({
                       id: channelToRename.id,
-                      name: normalizeName(values.name)
+                      name: filter.clean(values.name)
                     }))
                       .unwrap()
                       .then(() => toast.success(t('toast.channelRenamed')))
