@@ -45,7 +45,7 @@ const resources = {
         rename: 'Переименовать канал',
         delete: 'Удалить',
         send: 'Отправить',
-        messagePlaceholder: 'Введите сообщение',
+        messagePlaceholder: 'Новое сообщение',
         cancel: 'Отмена',
         add: 'Добавить',
         confirmDeletion: 'Подтвердите удаление',

@@ -47,8 +47,8 @@ export const HomePage = () => {
 
   useEffect(() => {
     /* 'https://frontend-project-12-5cf7.onrender.com' */
-    const socket = io('/ws', {
-      query: { token }
+    const socket = io('/', {
+      auth: { token }
     })
 
     socket.on('newMessage', (message) => {
@@ -170,6 +170,7 @@ export const HomePage = () => {
                     dispatch(createChannel({ name: cleanedName }))
                       .unwrap()
                       .then(() => {
+                        setActiveChannel(channel.id)
                         toast.success(t('toast.channelCreated'))
                         setModalOpen(false)
                       })
@@ -190,6 +191,7 @@ export const HomePage = () => {
                         <h1>{t('chat.newChannel')}</h1>
                         <label htmlFor="name">{t('chat.channelName')}</label>
                         <Field
+                          id="name"
                           type="text"
                           name="name"
                           className="form-control"
@@ -231,7 +233,7 @@ export const HomePage = () => {
                   </button>
 
                   {channel.removable && (
-                    <button onClick={() => setChannelMenu(channel)}>⋮</button>
+                    <button aria-label="Управление каналом" onClick={() => setChannelMenu(channel)}>⋮</button>
                   )}
                 </div>
               ))}
@@ -286,7 +288,7 @@ export const HomePage = () => {
                     {t('chat.cancel')}
                   </button>
 
-                  <button onClick={() => {
+                  <button className="btn btn-danger" onClick={() => {
                     dispatch(removeChannel(channelToDelete.id))
                       .unwrap()
                       .then(() => toast.success(t('toast.channelRemoved')))
@@ -327,7 +329,7 @@ export const HomePage = () => {
                     <div style={modalStyle}>
                       <h1>{t('chat.rename')}</h1>
 
-                      <Field name="name" autoFocus />
+                      <Field name="name" name="name" autoFocus />
                       <ErrorMessage name="name" component="div" />
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
@@ -362,6 +364,7 @@ export const HomePage = () => {
               <input
                 type="text"
                 value={newMessage}
+                aria-label={t('chat.messagePlaceholder')}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && newMessage.trim()) {
