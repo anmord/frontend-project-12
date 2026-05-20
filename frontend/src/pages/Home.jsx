@@ -94,7 +94,7 @@ export const HomePage = () => {
 
   const handleSendMessage = async () => {
     try {
-      const cleanedMessage = filter.clean(newMessage)
+      const cleanedMessage = filter.clean(newMessage).replace(/\*+/g, '*****')
 
       await axios.post('/api/v1/messages', {
         body: cleanedMessage,
@@ -165,7 +165,7 @@ export const HomePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={(values) => {
-                    const cleanedName = filter.clean(values.name)
+                    const cleanedName = filter.clean(values.name).replace(/\*+/g, '*****')
 
                     dispatch(createChannel({ name: cleanedName }))
                       .unwrap()
