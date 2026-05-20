@@ -47,7 +47,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     /* 'https://frontend-project-12-5cf7.onrender.com' */
-    const socket = io('/ws', {
+    const socket = io('/', {
       auth: { token }
     })
 
