@@ -189,6 +189,9 @@ export const HomePage = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         <h1>{t('chat.newChannel')}</h1>
+                        <label htmlFor="channelName">
+                          {t('chat.channelName')}
+                        </label>
                         <Field
                           id="channelName"
                           aria-label={t('chat.channelName')}
@@ -328,7 +331,9 @@ export const HomePage = () => {
                   <Form>
                     <div style={modalStyle}>
                       <h1>{t('chat.rename')}</h1>
-
+                      <label htmlFor="channelName">
+                        {t('chat.channelName')}
+                      </label>
                       <Field id="renameChannel" aria-label={t('chat.channelName')} name="name" autoFocus />
                       <ErrorMessage name="name" component="div" />
 

@@ -1,5 +1,5 @@
 import i18n from 'i18next'
-import { initReactI18next } from '../node_modules/react-i18next'
+import { initReactI18next } from 'react-i18next'
 
 const resources = {
   ru: {
@@ -40,7 +40,7 @@ const resources = {
       chat: {
         channels: 'Каналы',
         chat: 'Чат',
-        channelName: 'Имя',
+        channelName: 'Имя канала',
         newChannel: 'Новый канал',
         rename: 'Переименовать канал',
         delete: 'Удалить',
@@ -60,7 +60,7 @@ const resources = {
       toast: {
         networkError: 'Ошибка сети',
         loadError: 'Ошибка загрузки данных',
-        channelCreated: 'Канала создан',
+        channelCreated: 'Канал создан',
         channelRemoved: 'Канал удален',
         channelRenamed: 'Канал переименован',
       },
