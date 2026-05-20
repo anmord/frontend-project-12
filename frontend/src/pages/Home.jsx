@@ -168,7 +168,7 @@ export const HomePage = () => {
                   validateOnChange={false}
                   onSubmit={(values) => {
 
-                    dispatch(createChannel({ name: normalizeName(values.name) }))
+                    dispatch(createChannel({ name: values.name }))
                       .unwrap()
                       .then((channel) => {
                         setActiveChannel(channel.id)
