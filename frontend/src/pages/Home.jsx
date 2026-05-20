@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel, deleteChannel } from '../slices/chatSlice';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { Header } from '../components/Header';
 import { toast } from 'react-toastify'
 import filter from '../utils/filter'
-import { useRollbar } from '@rollbar/react'
 
 export const HomePage = () => {
   const { t } = useTranslation()
@@ -49,7 +48,7 @@ export const HomePage = () => {
   useEffect(() => {
     /* 'https://frontend-project-12-5cf7.onrender.com' */
     const socket = io('/ws', {
-      auth: { token }
+      query: { token }
     })
 
     socket.on('newMessage', (message) => {

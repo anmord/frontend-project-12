@@ -111,12 +111,6 @@ const chatSlice = createSlice({
         state.loading = false
         state.error = action.error.message
       })
-      .addCase(removeChannel.fulfilled, (state, action) => {
-        state.channels = state.channels.filter(c => c.id !== action.payload)
-        if (state.currentChannelId === action.payload) {
-          state.currentChannelId = state.channels[0]?.id || null
-        }
-      })
   }
 })
 
