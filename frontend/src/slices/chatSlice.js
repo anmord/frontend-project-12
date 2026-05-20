@@ -78,6 +78,11 @@ const chatSlice = createSlice({
       if (index !== -1) {
         state.channels[index] = updated
       }
+    },
+    deleteChannel: (state, action) => {
+      state.channels = state.channels.filter(
+        c => c.id !== action.payload
+      )
     }
   },
   extraReducers: (builder) => {
@@ -115,5 +120,5 @@ const chatSlice = createSlice({
   }
 })
 
-export const { addMessage, addChannel, updateChannel } = chatSlice.actions
+export const { addMessage, addChannel, updateChannel, deleteChannel } = chatSlice.actions
 export default chatSlice.reducer

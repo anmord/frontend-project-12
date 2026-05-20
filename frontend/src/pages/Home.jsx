@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel } from '../slices/chatSlice';
+import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel, deleteChannel } from '../slices/chatSlice';
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client'
 import axios from 'axios'
@@ -14,7 +14,6 @@ import { useRollbar } from '@rollbar/react'
 
 export const HomePage = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { channels, messages, loading, error } = useSelector(state => state.chat)
   const token = localStorage.getItem('token')
@@ -25,7 +24,6 @@ export const HomePage = () => {
   const [channelToDelete, setChannelToDelete] = useState(null)
   const [channelToRename, setChannelToRename] = useState(null)
   const [channelMenu, setChannelMenu] = useState(null)
-  const rollbar = useRollbar()
 
   const schema = yup.object({
     name: yup
@@ -50,7 +48,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     /* 'https://frontend-project-12-5cf7.onrender.com' */
-    const socket = io('/', {
+    const socket = io('/ws', {
       auth: { token }
     })
 
@@ -67,6 +65,10 @@ export const HomePage = () => {
       dispatch(updateChannel(channel))
     })
 
+    socket.on('removeChannel', ({ id }) => {
+      dispatch(deleteChannel(id))
+    })
+
     dispatch(fetchChannels())
     dispatch(fetchMessages())
 
@@ -74,6 +76,7 @@ export const HomePage = () => {
       socket.off('newMessage')
       socket.off('newChannel')
       socket.off('renameChannel')
+      socket.off('removeChannel')
       socket.disconnect()
     }
   }, [dispatch, token])
@@ -125,7 +128,7 @@ export const HomePage = () => {
     width: '300px'
   }
 
-  if (loading) return <div>{t('common.loading')}</div>
+  if (loading && channels.length === 0) return <div>{t('common.loading')}</div>
   /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
   const currentMessages = messages.filter(
     m => String(m.channelId) === String(activeChannel)
