@@ -28,8 +28,8 @@ export const HomePage = () => {
     name: yup
       .string()
       .required(t('errors.required'))
-      .min(3, t('errors.min', { count: 3 }))
-      .max(20, t('errors.max', { count: 20 }))
+      .min(3, t('errors.minMax'))
+      .max(20, t('errors.maxMax'))
       .test('unique', t('errors.unique'), function (value) {
         if (!value) return true
         const isDuplicate = channels.some(
@@ -331,7 +331,7 @@ export const HomePage = () => {
                   <Form>
                     <div style={modalStyle}>
                       <h1>{t('chat.rename')}</h1>
-                      <label htmlFor="channelName">
+                      <label htmlFor="renameChannel">
                         {t('chat.channelName')}
                       </label>
                       <Field id="renameChannel" aria-label={t('chat.channelName')} name="name" autoFocus />
