@@ -305,11 +305,6 @@ export const HomePage = () => {
             {channelToRename && (
               <div
                 style={overlayStyle}
-                onClick={(e) => {
-                  if (e.target === e.currentTarget) {
-                    setChannelToRename(null)
-                  }
-                }}
               >
                 <Formik
                   initialValues={{ name: channelToRename.name }}
@@ -324,8 +319,8 @@ export const HomePage = () => {
                     }))
                       .unwrap()
                       .then(() => {
-                        toast.success(t('toast.channelRenamed'))
                         setChannelToRename(null)
+                        toast.success(t('toast.channelRenamed'))
                       })
                       .catch(() => toast.error(t('toast.networkError')))
                   }}
@@ -336,7 +331,7 @@ export const HomePage = () => {
                       <label htmlFor="renameChannel">
                         {t('chat.channelName')}
                       </label>
-                      <Field id="renameChannel" aria-label={t('chat.channelName')} name="name" autoFocus />
+                      <Field id="renameChannel" aria-label={t('chat.channelName')} name="name" type="text" autoFocus />
                       <ErrorMessage name="name" component="div" />
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
