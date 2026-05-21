@@ -314,6 +314,8 @@ export const HomePage = () => {
                 <Formik
                   initialValues={{ name: channelToRename.name }}
                   validationSchema={schema}
+                  validateOnBlur={false}
+                  validateOnChange={false}
                   onSubmit={(values) => {
 
                     dispatch(renameChannel({
@@ -321,9 +323,11 @@ export const HomePage = () => {
                       name: filter.clean(values.name)
                     }))
                       .unwrap()
-                      .then(() => toast.success(t('toast.channelRenamed')))
+                      .then(() => {
+                        toast.success(t('toast.channelRenamed'))
+                        setChannelToRename(null)
+                      })
                       .catch(() => toast.error(t('toast.networkError')))
-                    setChannelToRename(null)
                   }}
                 >
                   <Form>
@@ -383,7 +387,7 @@ export const HomePage = () => {
           </div>
 
         </div>
-      </div>
+      </div >
     </>
   )
 }
