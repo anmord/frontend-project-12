@@ -324,7 +324,6 @@ export const HomePage = () => {
                     }))
                       .unwrap()
                       .then(() => {
-                        dispatch(updateChannel(channel))
                         toast.success(t('toast.channelRenamed'))
                         setChannelToRename(null)
                       })
