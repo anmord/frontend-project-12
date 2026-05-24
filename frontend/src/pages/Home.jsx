@@ -266,7 +266,7 @@ export const HomePage = () => {
                   }}>
                     {t('chat.delete')}
                   </button>
-                  <button onClick={() => {
+                  <button type="button" onClick={() => {
                     setChannelToRename(channelMenu)
                     setChannelMenu(null)
                   }}>
@@ -380,7 +380,7 @@ export const HomePage = () => {
                 }}
                 placeholder={t('chat.messagePlaceholder')}
               />
-              <button onClick={handleSendMessage} disabled={!newMessage.trim()}>
+              <button type="button" onClick={handleSendMessage} disabled={!newMessage.trim()}>
                 {t('form.submit')}
               </button>
             </div>
