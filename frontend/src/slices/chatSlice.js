@@ -74,14 +74,14 @@ const chatSlice = createSlice({
     },
     updateChannel: (state, action) => {
       const updated = action.payload
-      const index = state.channels.findIndex((c) => c.id === updated.id)
+      const index = state.channels.findIndex(c => c.id === updated.id)
       if (index !== -1) {
         state.channels[index] = updated
       }
     },
     deleteChannel: (state, action) => {
       state.channels = state.channels.filter(
-        (c) => c.id !== action.payload,
+        c => c.id !== action.payload,
       )
     },
   },

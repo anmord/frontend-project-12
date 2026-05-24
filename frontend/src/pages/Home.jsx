@@ -14,7 +14,7 @@ import filter from '../utils/filter'
 export const HomePage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { channels, messages, loading, error } = useSelector((state) => state.chat)
+  const { channels, messages, loading, error } = useSelector(state => state.chat)
   const token = localStorage.getItem('token')
   const username = localStorage.getItem('username')
   const [newMessage, setNewMessage] = useState('')
@@ -33,7 +33,7 @@ export const HomePage = () => {
       .test('unique', t('errors.unique'), function (value) {
         if (!value) return true
         const isDuplicate = channels.some(
-          (c) => c.name.toLowerCase() === value.toLowerCase()
+          c => c.name.toLowerCase() === value.toLowerCase()
             && c.id !== channelToRename?.id,
         )
         if (isDuplicate) {
@@ -78,7 +78,7 @@ export const HomePage = () => {
   }, [dispatch, token])
 
   useEffect(() => {
-    if (!channels.find((c) => c.id === activeChannel)) {
+    if (!channels.find(c => c.id === activeChannel)) {
       setActiveChannel(channels[0]?.id || null)
     }
   }, [channels, activeChannel])
@@ -127,12 +127,14 @@ export const HomePage = () => {
     width: '300px',
   }
 
-  if (loading && channels.length === 0) return <div>
-    {t('common.loading')}
-  </div>
+  if (loading && channels.length === 0) return (
+    <div>
+      {t('common.loading')}
+    </div>
+  )
   /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
   const currentMessages = messages.filter(
-    (m) => String(m.channelId) === String(activeChannel),
+    m => String(m.channelId) === String(activeChannel),
   )
 
   return (
@@ -202,7 +204,7 @@ export const HomePage = () => {
                           margin: '100px auto',
                           width: '300px',
                         }}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={e => e.stopPropagation()}
                       >
                         <h1>
                           {t('chat.newChannel')}
@@ -244,7 +246,7 @@ export const HomePage = () => {
             )}
 
             <div>
-              {channels.map((channel) => (
+              {channels.map(channel => (
                 <div
                   key={channel.id}
                   style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -300,7 +302,7 @@ export const HomePage = () => {
                     padding: '10px',
                     border: '1px solid #ccc',
                   }}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                 >
                   <button onClick={() => {
                     setChannelToDelete(channelMenu)
@@ -329,7 +331,7 @@ export const HomePage = () => {
                 <div
                   className="modal"
                   style={modalStyle}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                 >
                   <p>
                     {t('chat.confirmDeletion')}
@@ -369,7 +371,6 @@ export const HomePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={(values) => {
-
                     dispatch(renameChannel({
                       id: channelToRename.id,
                       name: filter.clean(values.name),
@@ -385,7 +386,7 @@ export const HomePage = () => {
                   <Form>
                     <div
                       style={modalStyle}
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={e => e.stopPropagation()}
                     >
                       <h1>
                         {t('chat.rename')}
@@ -431,7 +432,7 @@ export const HomePage = () => {
               {t('chat.chat')}
             </h2>
             <ul>
-              {currentMessages.map((message) => (
+              {currentMessages.map(message => (
                 <li key={message.id}>
                   <b>
                     {message.username}
@@ -448,7 +449,7 @@ export const HomePage = () => {
                 type="text"
                 value={newMessage}
                 aria-label={t('chat.messagePlaceholder')}
-                onChange={(e) => setNewMessage(e.target.value)}
+                onChange={e => setNewMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && newMessage.trim()) {
                     handleSendMessage()
@@ -467,7 +468,7 @@ export const HomePage = () => {
           </div>
 
         </div>
-      </div >
+      </div>
     </>
   )
 }

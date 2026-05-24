@@ -30,5 +30,5 @@ createRoot(document.getElementById('root')).render(
         </Provider>
       </ErrorBoundary>
     </RollbarProvider>
-  </StrictMode >,
+  </StrictMode>,
 )
