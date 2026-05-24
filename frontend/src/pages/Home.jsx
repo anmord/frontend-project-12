@@ -331,7 +331,7 @@ export const HomePage = () => {
                   }}
                 >
                   <Form>
-                    <div style={modalStyle}>
+                    <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
                       <h1>{t('chat.rename')}</h1>
                       <label htmlFor="renameChannel">
                         {t('chat.channelName')}
