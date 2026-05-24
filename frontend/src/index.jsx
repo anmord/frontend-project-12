@@ -19,7 +19,9 @@ createRoot(document.getElementById('root')).render(
       <ErrorBoundary
         fallbackUI={() => (
           <div style={{ padding: '20px', color: 'red' }}>
-            <h2>Что-то пошло не так</h2>
+            <h2>
+              Что-то пошло не так
+            </h2>
           </div>
         )}
       >

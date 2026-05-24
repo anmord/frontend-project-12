@@ -14,7 +14,7 @@ import filter from '../utils/filter'
 export const HomePage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { channels, messages, loading, error } = useSelector(state => state.chat)
+  const { channels, messages, loading, error } = useSelector((state) => state.chat)
   const token = localStorage.getItem('token')
   const username = localStorage.getItem('username')
   const [newMessage, setNewMessage] = useState('')
@@ -33,7 +33,7 @@ export const HomePage = () => {
       .test('unique', t('errors.unique'), function (value) {
         if (!value) return true
         const isDuplicate = channels.some(
-          c => c.name.toLowerCase() === value.toLowerCase()
+          (c) => c.name.toLowerCase() === value.toLowerCase()
             && c.id !== channelToRename?.id,
         )
         if (isDuplicate) {
@@ -49,15 +49,15 @@ export const HomePage = () => {
       auth: { token },
     })
 
-    socket.on('newMessage', message => {
+    socket.on('newMessage', (message) => {
       dispatch(addMessage(message))
     })
 
-    socket.on('newChannel', channel => {
+    socket.on('newChannel', (channel) => {
       dispatch(addChannel(channel))
     })
 
-    socket.on('renameChannel', channel => {
+    socket.on('renameChannel', (channel) => {
       dispatch(updateChannel(channel))
     })
 
@@ -78,7 +78,7 @@ export const HomePage = () => {
   }, [dispatch, token])
 
   useEffect(() => {
-    if (!channels.find(c => c.id === activeChannel)) {
+    if (!channels.find((c) => c.id === activeChannel)) {
       setActiveChannel(channels[0]?.id || null)
     }
   }, [channels, activeChannel])
@@ -127,24 +127,41 @@ export const HomePage = () => {
     width: '300px',
   }
 
-  if (loading && channels.length === 0) return <div>{t('common.loading')}</div>
+  if (loading && channels.length === 0) return <div>
+    {t('common.loading')}
+  </div>
   /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
   const currentMessages = messages.filter(
-    m => String(m.channelId) === String(activeChannel),
+    (m) => String(m.channelId) === String(activeChannel),
   )
 
   return (
     <>
       <Header />
       <div>
-        <h1>{t('homePage')}</h1>
-        <div><a>{t('username', { name: username })}</a></div>
+        <h1>
+          {t('homePage')}
+        </h1>
+        <div>
+          <a>
+            {t('username', { name: username })}
+          </a>
+        </div>
 
         <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
 
           <div style={{ width: '200px' }}>
-            <h2>{t('chat.channels')}</h2>
-            <button type="button" onClick={() => setModalOpen(true)}> + {t('chat.newChannel')}</button>
+            <h2>
+              {t('chat.channels')}
+            </h2>
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
+            >
+              {' '}
+              +
+              {t('chat.newChannel')}
+            </button>
 
             {isModalOpen && (
               <div
@@ -164,11 +181,11 @@ export const HomePage = () => {
                   validationSchema={schema}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={values => {
+                  onSubmit={(values) => {
                     const cleaned = filter.clean(values.name)
                     dispatch(createChannel({ name: cleaned }))
                       .unwrap()
-                      .then(channel => {
+                      .then((channel) => {
                         setActiveChannel(channel.id)
                         toast.success(t('toast.channelCreated'))
                         setModalOpen(false)
@@ -185,9 +202,11 @@ export const HomePage = () => {
                           margin: '100px auto',
                           width: '300px',
                         }}
-                        onClick={e => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <h1>{t('chat.newChannel')}</h1>
+                        <h1>
+                          {t('chat.newChannel')}
+                        </h1>
                         <label htmlFor="channelName">
                           {t('chat.channelName')}
                         </label>
@@ -199,7 +218,10 @@ export const HomePage = () => {
                           className="form-control"
                           autoFocus
                         />
-                        <ErrorMessage name="name" component="div" />
+                        <ErrorMessage
+                          name="name"
+                          component="div"
+                        />
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                           <button
                             type="button"
@@ -210,7 +232,9 @@ export const HomePage = () => {
                           >
                             {t('chat.cancel')}
                           </button>
-                          <button type="submit">{t('chat.add')}</button>
+                          <button type="submit">
+                            {t('chat.add')}
+                          </button>
                         </div>
                       </div>
                     </Form>
@@ -220,8 +244,11 @@ export const HomePage = () => {
             )}
 
             <div>
-              {channels.map(channel => (
-                <div key={channel.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {channels.map((channel) => (
+                <div
+                  key={channel.id}
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
                   <button
                     type="button"
                     onClick={() => setActiveChannel(channel.id)}
@@ -230,12 +257,20 @@ export const HomePage = () => {
                       fontWeight: channel.id === activeChannel ? 'bold' : 'normal',
                     }}
                   >
-                    <span># </span>
-                    <span>{channel.name}</span>
+                    <span>
+                      #
+                      {' '}
+                    </span>
+                    <span>
+                      {channel.name}
+                    </span>
                   </button>
 
                   {channel.removable && (
-                    <button type="button" onClick={() => setChannelMenu(channel)}>
+                    <button
+                      type="button"
+                      onClick={() => setChannelMenu(channel)}
+                    >
                       <span className="visually-hidden">
                         {t('chat.manageChannel')}
                       </span>
@@ -254,7 +289,8 @@ export const HomePage = () => {
                   width: '100%',
                   height: '100%',
                 }}
-                onClick={() => setChannelMenu(null)}>
+                onClick={() => setChannelMenu(null)}
+              >
                 <div
                   style={{
                     position: 'absolute',
@@ -264,17 +300,22 @@ export const HomePage = () => {
                     padding: '10px',
                     border: '1px solid #ccc',
                   }}
-                  onClick={e => e.stopPropagation()}>
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button onClick={() => {
                     setChannelToDelete(channelMenu)
                     setChannelMenu(null)
-                  }}>
+                  }}
+                  >
                     {t('chat.delete')}
                   </button>
-                  <button type="button" onClick={() => {
-                    setChannelToRename(channelMenu)
-                    setChannelMenu(null)
-                  }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setChannelToRename(channelMenu)
+                      setChannelMenu(null)
+                    }}
+                  >
                     {t('chat.rename')}
                   </button>
                 </div>
@@ -288,21 +329,26 @@ export const HomePage = () => {
                 <div
                   className="modal"
                   style={modalStyle}
-                  onClick={e => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <p>{t('chat.confirmDeletion')}</p>
+                  <p>
+                    {t('chat.confirmDeletion')}
+                  </p>
 
                   <button onClick={() => setChannelToDelete(null)}>
                     {t('chat.cancel')}
                   </button>
 
-                  <button className="btn btn-danger" onClick={() => {
-                    dispatch(removeChannel(channelToDelete.id))
-                      .unwrap()
-                      .then(() => toast.success(t('toast.channelRemoved')))
-                      .catch(() => toast.error(t('toast.networkError')))
-                    setChannelToDelete(null)
-                  }}>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => {
+                      dispatch(removeChannel(channelToDelete.id))
+                        .unwrap()
+                        .then(() => toast.success(t('toast.channelRemoved')))
+                        .catch(() => toast.error(t('toast.networkError')))
+                      setChannelToDelete(null)
+                    }}
+                  >
                     {t('chat.delete')}
                   </button>
                 </div>
@@ -311,7 +357,7 @@ export const HomePage = () => {
             {channelToRename && (
               <div
                 style={overlayStyle}
-                onClick={e => {
+                onClick={(e) => {
                   if (e.target === e.currentTarget) {
                     setChannelToRename(null)
                   }
@@ -322,7 +368,7 @@ export const HomePage = () => {
                   validationSchema={schema}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={values => {
+                  onSubmit={(values) => {
 
                     dispatch(renameChannel({
                       id: channelToRename.id,
@@ -337,13 +383,28 @@ export const HomePage = () => {
                   }}
                 >
                   <Form>
-                    <div style={modalStyle} onClick={e => e.stopPropagation()}>
-                      <h1>{t('chat.rename')}</h1>
+                    <div
+                      style={modalStyle}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <h1>
+                        {t('chat.rename')}
+                      </h1>
                       <label htmlFor="renameChannel">
                         {t('chat.channelName')}
                       </label>
-                      <Field id="renameChannel" aria-label={t('chat.channelName')} name="name" type="text" className="form-control" autoFocus />
-                      <ErrorMessage name="name" component="div" />
+                      <Field
+                        id="renameChannel"
+                        aria-label={t('chat.channelName')}
+                        name="name"
+                        type="text"
+                        className="form-control"
+                        autoFocus
+                      />
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                      />
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                         <button
@@ -354,7 +415,9 @@ export const HomePage = () => {
                         >
                           {t('chat.cancel')}
                         </button>
-                        <button type="submit">{t('save')}</button>
+                        <button type="submit">
+                          {t('save')}
+                        </button>
                       </div>
                     </div>
                   </Form>
@@ -364,11 +427,18 @@ export const HomePage = () => {
           </div>
 
           <div style={{ flex: 1 }}>
-            <h2>{t('chat.chat')}</h2>
+            <h2>
+              {t('chat.chat')}
+            </h2>
             <ul>
-              {currentMessages.map(message => (
+              {currentMessages.map((message) => (
                 <li key={message.id}>
-                  <b>{message.username}:</b> {message.body}
+                  <b>
+                    {message.username}
+                    :
+                  </b>
+                  {' '}
+                  {message.body}
                 </li>
               ))}
             </ul>
@@ -378,15 +448,19 @@ export const HomePage = () => {
                 type="text"
                 value={newMessage}
                 aria-label={t('chat.messagePlaceholder')}
-                onChange={e => setNewMessage(e.target.value)}
-                onKeyDown={e => {
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => {
                   if (e.key === 'Enter' && newMessage.trim()) {
                     handleSendMessage()
                   }
                 }}
                 placeholder={t('chat.messagePlaceholder')}
               />
-              <button type="button" onClick={handleSendMessage} disabled={!newMessage.trim()}>
+              <button
+                type="button"
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim()}
+              >
                 {t('form.submit')}
               </button>
             </div>

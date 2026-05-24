@@ -23,7 +23,7 @@ export const LoginPage = () => {
       <Formik
         initialValues={{ username: '', password: '' }}
 
-        validate={values => {
+        validate={(values) => {
           const errors = {}
           if (!values.username.trim()) {
             errors.username = t('errors.login')
@@ -64,28 +64,44 @@ export const LoginPage = () => {
         {() => (
           <Form>
             <div className="form-group">
-              <h1>{t('login')}</h1>
-              <label htmlFor="username">{t('labelLogin')}</label>
+              <h1>
+                {t('login')}
+              </h1>
+              <label htmlFor="username">
+                {t('labelLogin')}
+              </label>
               <Field
                 id="username"
                 type="text"
                 name="username"
                 className="form-control"
               />
-              <ErrorMessage name="username" component="div" />
+              <ErrorMessage
+                name="username"
+                component="div"
+              />
             </div>
             <div className="form-group">
-              <label htmlFor="password">{t('labelPassword')}</label>
+              <label htmlFor="password">
+                {t('labelPassword')}
+              </label>
               <Field
                 id="password"
                 type="password"
                 name="password"
                 className="form-control"
               />
-              <ErrorMessage name="password" component="div" />
+              <ErrorMessage
+                name="password"
+                component="div"
+              />
             </div>
-            <button type="submit">{t('login')}</button>
-            <Link to="/signup">{t('signup')}</Link>
+            <button type="submit">
+              {t('login')}
+            </button>
+            <Link to="/signup">
+              {t('signup')}
+            </Link>
           </Form>
         )}
       </Formik>

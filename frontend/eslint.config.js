@@ -1,8 +1,9 @@
 import js from '@eslint/js'
 import globals from 'globals'
+import stylistic from '@stylistic/eslint-plugin'
+import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
-import stylistic from '@stylistic/eslint-plugin'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -11,46 +12,54 @@ export default defineConfig([
   {
     files: ['**/*.{js,jsx}'],
 
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-
-    plugins: {
-      '@stylistic': stylistic,
-    },
-
     languageOptions: {
-      ecmaVersion: 2020,
-
+      ecmaVersion: 2022,
       globals: globals.browser,
-
+      sourceType: 'module',
       parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: {
-          jsx: true,
-        },
-        sourceType: 'module',
+        ecmaFeatures: { jsx: true },
       },
     },
 
-    rules: {
-      'no-unused-vars': [
-        'error',
-        {
-          varsIgnorePattern: '^[A-Z_]',
-        },
-      ],
+    plugins: {
+      react,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+      '@stylistic': stylistic,
+    },
 
+    settings: {
+      react: { version: 'detect' },
+    },
+
+    rules: {
+      ...js.configs.recommended.rules,
+
+      // react hooks (вручную, без extends)
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // react refresh
+      'react-refresh/only-export-components': 'warn',
+
+      // react
+      'react/react-in-jsx-scope': 'off',
+
+      // stylistic (как у тебя)
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/comma-dangle': ['error', 'always-multiline'],
       '@stylistic/eol-last': ['error', 'always'],
       '@stylistic/no-trailing-spaces': 'error',
-      '@stylistic/arrow-parens': ['error', 'as-needed'],
-      '@stylistic/brace-style': ['error', 'stroustrup'],
       '@stylistic/indent': ['error', 2],
+      '@stylistic/arrow-parens': ['error', 'always'],
+
+      // JSX (чтобы совпало с CI)
+      '@stylistic/jsx-tag-spacing': 'error',
+      '@stylistic/jsx-one-expression-per-line': 'error',
+      '@stylistic/jsx-closing-bracket-location': 'error',
+      '@stylistic/jsx-first-prop-new-line': 'error',
+      '@stylistic/jsx-max-props-per-line': 'error',
     },
   },
 ])

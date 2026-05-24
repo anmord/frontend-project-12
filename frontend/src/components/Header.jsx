@@ -13,11 +13,19 @@ export const Header = () => {
   }
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-      <h2 style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+      <h2
+        style={{ cursor: 'pointer' }}
+        onClick={() => navigate('/')}
+      >
         {t('appName')}
       </h2>
       {token && (
-        <button type="button" onClick={handleLogout}>{t('logout')}</button>
+        <button
+          type="button"
+          onClick={handleLogout}
+        >
+          {t('logout')}
+        </button>
       )}
     </div>
   )

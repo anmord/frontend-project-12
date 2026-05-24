@@ -25,7 +25,7 @@ export const fetchMessages = createAsyncThunk(
 
 export const createChannel = createAsyncThunk(
   'chat/createChannels',
-  async newChannel => {
+  async (newChannel) => {
     const token = localStorage.getItem('token')
     const response = await axios.post('/api/v1/channels', newChannel, {
       headers: { Authorization: `Bearer ${token}` },
@@ -36,7 +36,7 @@ export const createChannel = createAsyncThunk(
 
 export const removeChannel = createAsyncThunk(
   'chat/removeChannels',
-  async id => {
+  async (id) => {
     const token = localStorage.getItem('token')
     await axios.delete(`/api/v1/channels/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -74,20 +74,20 @@ const chatSlice = createSlice({
     },
     updateChannel: (state, action) => {
       const updated = action.payload
-      const index = state.channels.findIndex(c => c.id === updated.id)
+      const index = state.channels.findIndex((c) => c.id === updated.id)
       if (index !== -1) {
         state.channels[index] = updated
       }
     },
     deleteChannel: (state, action) => {
       state.channels = state.channels.filter(
-        c => c.id !== action.payload,
+        (c) => c.id !== action.payload,
       )
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchChannels.pending, state => {
+      .addCase(fetchChannels.pending, (state) => {
         state.loading = true
         state.error = null
       })
@@ -99,7 +99,7 @@ const chatSlice = createSlice({
         state.loading = false
         state.error = action.error.message
       })
-      .addCase(fetchMessages.pending, state => {
+      .addCase(fetchMessages.pending, (state) => {
         state.loading = true
         state.error = null
       })

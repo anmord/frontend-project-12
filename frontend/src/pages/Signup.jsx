@@ -64,37 +64,59 @@ export const SignupPage = () => {
         {({ isSubmitting }) => (
           <Form>
             <div className="form-group">
-              <h1>{t('signup')}</h1>
-              <label htmlFor="username">{t('labelLogup')}</label>
+              <h1>
+                {t('signup')}
+              </h1>
+              <label htmlFor="username">
+                {t('labelLogup')}
+              </label>
               <Field
                 id="username"
                 type="text"
                 name="username"
                 className="form-control"
               />
-              <ErrorMessage name="username" component="div" />
+              <ErrorMessage
+                name="username"
+                component="div"
+              />
             </div>
             <div className="form-group">
-              <label htmlFor="password">{t('labelPassword')}</label>
+              <label htmlFor="password">
+                {t('labelPassword')}
+              </label>
               <Field
                 id="password"
                 type="password"
                 name="password"
                 className="form-control"
               />
-              <ErrorMessage name="password" component="div" />
+              <ErrorMessage
+                name="password"
+                component="div"
+              />
             </div>
             <div className="form-group">
-              <label htmlFor="confirmPassword">{t('form.confirmPassword')}</label>
+              <label htmlFor="confirmPassword">
+                {t('form.confirmPassword')}
+              </label>
               <Field
                 id="confirmPassword"
                 type="password"
                 name="confirmPassword"
                 className="form-control"
               />
-              <ErrorMessage name="confirmPassword" component="div" />
+              <ErrorMessage
+                name="confirmPassword"
+                component="div"
+              />
             </div>
-            <button type="submit" disabled={isSubmitting}>{t('signupButton')}</button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {t('signupButton')}
+            </button>
           </Form>
         )}
       </Formik>
