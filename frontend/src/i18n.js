@@ -49,6 +49,7 @@ const resources = {
         cancel: 'Отмена',
         add: 'Добавить',
         confirmDeletion: 'Подтвердите удаление',
+        manageChannel: 'Управление каналом',
       },
 
       common: {

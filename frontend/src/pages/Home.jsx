@@ -235,7 +235,12 @@ export const HomePage = () => {
                   </button>
 
                   {channel.removable && (
-                    <button aria-label="Управление каналом" onClick={() => setChannelMenu(channel)}>⋮</button>
+                    <button type="button" onClick={() => setChannelMenu(channel)}>
+                      <span className="visually-hidden">
+                        {t('chat.manageChannel')}
+                      </span>
+                      ⋮
+                    </button>
                   )}
                 </div>
               ))}
