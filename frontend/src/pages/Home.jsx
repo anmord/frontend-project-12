@@ -57,7 +57,6 @@ export const HomePage = () => {
 
     socket.on('newChannel', (channel) => {
       dispatch(addChannel(channel))
-      setActiveChannel(channel.id)
     })
 
     socket.on('renameChannel', (channel) => {
