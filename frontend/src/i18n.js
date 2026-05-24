@@ -62,7 +62,7 @@ const resources = {
         networkError: 'Ошибка сети',
         loadError: 'Ошибка загрузки данных',
         channelCreated: 'Канал создан',
-        channelRemoved: 'Канал удален',
+        channelRemoved: 'Канал удалён',
         channelRenamed: 'Канал переименован',
       },
     },

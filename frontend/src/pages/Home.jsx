@@ -286,6 +286,7 @@ export const HomePage = () => {
                 onClick={() => setChannelToDelete(null)}
               >
                 <div
+                  className="modal"
                   style={modalStyle}
                   onClick={(e) => e.stopPropagation()}
                 >
