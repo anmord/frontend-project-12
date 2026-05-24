@@ -1,15 +1,15 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import axios from 'axios'
 
 export const fetchChannels = createAsyncThunk(
   'chat/fetchChannels',
   async () => {
     const token = localStorage.getItem('token')
     const response = await axios.get('/api/v1/channels', {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
     return response.data
-  }
+  },
 )
 
 export const fetchMessages = createAsyncThunk(
@@ -17,32 +17,32 @@ export const fetchMessages = createAsyncThunk(
   async () => {
     const token = localStorage.getItem('token')
     const response = await axios.get('/api/v1/messages', {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
     return response.data
-  }
+  },
 )
 
 export const createChannel = createAsyncThunk(
   'chat/createChannels',
-  async (newChannel) => {
+  async newChannel => {
     const token = localStorage.getItem('token')
     const response = await axios.post('/api/v1/channels', newChannel, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
     return response.data
-  }
+  },
 )
 
 export const removeChannel = createAsyncThunk(
   'chat/removeChannels',
-  async (id) => {
+  async id => {
     const token = localStorage.getItem('token')
     await axios.delete(`/api/v1/channels/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
     return id
-  }
+  },
 )
 
 export const renameChannel = createAsyncThunk(
@@ -50,10 +50,10 @@ export const renameChannel = createAsyncThunk(
   async ({ id, name }) => {
     const token = localStorage.getItem('token')
     const response = await axios.patch(`/api/v1/channels/${id}`, { name }, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
     return response.data
-  }
+  },
 )
 
 const chatSlice = createSlice({
@@ -81,13 +81,13 @@ const chatSlice = createSlice({
     },
     deleteChannel: (state, action) => {
       state.channels = state.channels.filter(
-        c => c.id !== action.payload
+        c => c.id !== action.payload,
       )
-    }
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchChannels.pending, (state) => {
+      .addCase(fetchChannels.pending, state => {
         state.loading = true
         state.error = null
       })
@@ -99,7 +99,7 @@ const chatSlice = createSlice({
         state.loading = false
         state.error = action.error.message
       })
-      .addCase(fetchMessages.pending, (state) => {
+      .addCase(fetchMessages.pending, state => {
         state.loading = true
         state.error = null
       })
@@ -111,7 +111,7 @@ const chatSlice = createSlice({
         state.loading = false
         state.error = action.error.message
       })
-  }
+  },
 })
 
 export const { addMessage, addChannel, updateChannel, deleteChannel } = chatSlice.actions

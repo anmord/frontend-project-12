@@ -1,13 +1,13 @@
-import { Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel, deleteChannel } from '../slices/chatSlice';
-import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel, deleteChannel } from '../slices/chatSlice'
+import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import axios from 'axios'
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage } from 'formik'
 import * as yup from 'yup'
-import { useTranslation } from 'react-i18next';
-import { Header } from '../components/Header';
+import { useTranslation } from 'react-i18next'
+import { Header } from '../components/Header'
 import { toast } from 'react-toastify'
 import filter from '../utils/filter'
 
@@ -34,32 +34,30 @@ export const HomePage = () => {
         if (!value) return true
         const isDuplicate = channels.some(
           c => c.name.toLowerCase() === value.toLowerCase()
-            && c.id !== channelToRename?.id
+            && c.id !== channelToRename?.id,
         )
         if (isDuplicate) {
           return this.createError({ message: t('errors.unique') })
         }
         return true
-      })
+      }),
   })
-
-  if (!token) return <Navigate to="/login" />
 
   useEffect(() => {
     /* 'https://frontend-project-12-5cf7.onrender.com' */
     const socket = io('/', {
-      auth: { token }
+      auth: { token },
     })
 
-    socket.on('newMessage', (message) => {
+    socket.on('newMessage', message => {
       dispatch(addMessage(message))
     })
 
-    socket.on('newChannel', (channel) => {
+    socket.on('newChannel', channel => {
       dispatch(addChannel(channel))
     })
 
-    socket.on('renameChannel', (channel) => {
+    socket.on('renameChannel', channel => {
       dispatch(updateChannel(channel))
     })
 
@@ -91,6 +89,8 @@ export const HomePage = () => {
     }
   }, [error, t])
 
+  if (!token) return <Navigate to="/login" />
+
   const handleSendMessage = async () => {
     try {
       const cleanedMessage = filter.clean(newMessage)
@@ -98,14 +98,15 @@ export const HomePage = () => {
       await axios.post('/api/v1/messages', {
         body: cleanedMessage,
         channelId: activeChannel,
-        username
+        username,
       }, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
       setNewMessage('')
-    } catch (err) {
+    }
+    catch (err) {
       console.error(err)
       toast.error(t('toast.networkError'))
     }
@@ -117,19 +118,19 @@ export const HomePage = () => {
     left: 0,
     width: '100%',
     height: '100%',
-    background: 'rgba(0,0,0,0.5)'
+    background: 'rgba(0,0,0,0.5)',
   }
   const modalStyle = {
     background: 'white',
     padding: '20px',
     margin: '100px auto',
-    width: '300px'
+    width: '300px',
   }
 
   if (loading && channels.length === 0) return <div>{t('common.loading')}</div>
   /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
   const currentMessages = messages.filter(
-    m => String(m.channelId) === String(activeChannel)
+    m => String(m.channelId) === String(activeChannel),
   )
 
   return (
@@ -153,21 +154,21 @@ export const HomePage = () => {
                   left: 0,
                   width: '100%',
                   height: '100%',
-                  background: 'rgba(0,0,0,0.5)'
+                  background: 'rgba(0,0,0,0.5)',
                 }}
                 onClick={() => setModalOpen(false)}
               >
                 <Formik
                   enableReinitialize
-                  initialValues={{ name: "" }}
+                  initialValues={{ name: '' }}
                   validationSchema={schema}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={(values) => {
+                  onSubmit={values => {
                     const cleaned = filter.clean(values.name)
                     dispatch(createChannel({ name: cleaned }))
                       .unwrap()
-                      .then((channel) => {
+                      .then(channel => {
                         setActiveChannel(channel.id)
                         toast.success(t('toast.channelCreated'))
                         setModalOpen(false)
@@ -182,9 +183,9 @@ export const HomePage = () => {
                           background: 'white',
                           padding: '20px',
                           margin: '100px auto',
-                          width: '300px'
+                          width: '300px',
                         }}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={e => e.stopPropagation()}
                       >
                         <h1>{t('chat.newChannel')}</h1>
                         <label htmlFor="channelName">
@@ -226,7 +227,7 @@ export const HomePage = () => {
                     onClick={() => setActiveChannel(channel.id)}
                     style={{
                       cursor: 'pointer',
-                      fontWeight: channel.id === activeChannel ? 'bold' : 'normal'
+                      fontWeight: channel.id === activeChannel ? 'bold' : 'normal',
                     }}
                   >
                     <span># </span>
@@ -261,9 +262,9 @@ export const HomePage = () => {
                     left: '100px',
                     background: 'white',
                     padding: '10px',
-                    border: '1px solid #ccc'
+                    border: '1px solid #ccc',
                   }}
-                  onClick={(e) => e.stopPropagation()}>
+                  onClick={e => e.stopPropagation()}>
                   <button onClick={() => {
                     setChannelToDelete(channelMenu)
                     setChannelMenu(null)
@@ -287,7 +288,7 @@ export const HomePage = () => {
                 <div
                   className="modal"
                   style={modalStyle}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                 >
                   <p>{t('chat.confirmDeletion')}</p>
 
@@ -310,7 +311,7 @@ export const HomePage = () => {
             {channelToRename && (
               <div
                 style={overlayStyle}
-                onClick={(e) => {
+                onClick={e => {
                   if (e.target === e.currentTarget) {
                     setChannelToRename(null)
                   }
@@ -321,11 +322,11 @@ export const HomePage = () => {
                   validationSchema={schema}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={(values) => {
+                  onSubmit={values => {
 
                     dispatch(renameChannel({
                       id: channelToRename.id,
-                      name: filter.clean(values.name)
+                      name: filter.clean(values.name),
                     }))
                       .unwrap()
                       .then(() => {
@@ -336,7 +337,7 @@ export const HomePage = () => {
                   }}
                 >
                   <Form>
-                    <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+                    <div style={modalStyle} onClick={e => e.stopPropagation()}>
                       <h1>{t('chat.rename')}</h1>
                       <label htmlFor="renameChannel">
                         {t('chat.channelName')}
@@ -377,8 +378,8 @@ export const HomePage = () => {
                 type="text"
                 value={newMessage}
                 aria-label={t('chat.messagePlaceholder')}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => {
+                onChange={e => setNewMessage(e.target.value)}
+                onKeyDown={e => {
                   if (e.key === 'Enter' && newMessage.trim()) {
                     handleSendMessage()
                   }

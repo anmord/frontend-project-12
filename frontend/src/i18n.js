@@ -34,7 +34,7 @@ const resources = {
         login: 'Введите логин',
         password: 'Введите пароль',
         pnf: 'Страница не найдена',
-        oneOf: 'Пароли должны совпадать'
+        oneOf: 'Пароли должны совпадать',
       },
 
       chat: {
@@ -80,4 +80,4 @@ i18n
     },
   })
 
-export default i18n  
+export default i18n

@@ -1,9 +1,9 @@
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { Navigate, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import * as yup from 'yup'
-import { Header } from '../components/Header';
-import { useTranslation } from 'react-i18next';
+import { Header } from '../components/Header'
+import { useTranslation } from 'react-i18next'
 
 export const SignupPage = () => {
   const { t } = useTranslation()
@@ -34,7 +34,7 @@ export const SignupPage = () => {
     <>
       <Header />
       <Formik
-        initialValues={{ username: "", password: "", confirmPassword: "" }}
+        initialValues={{ username: '', password: '', confirmPassword: '' }}
         validationSchema={schema}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
@@ -46,14 +46,17 @@ export const SignupPage = () => {
             localStorage.setItem('token', token)
             localStorage.setItem('username', response.data.username)
             navigate('/')
-          } catch (err) {
+          }
+          catch (err) {
             if (err.response?.status === 409) {
               setErrors({ username: t('errors.userExists') })
               console.log(err)
-            } else {
+            }
+            else {
               setErrors({ password: t('errors.network') })
             }
-          } finally {
+          }
+          finally {
             setSubmitting(false)
           }
         }}
@@ -97,4 +100,4 @@ export const SignupPage = () => {
       </Formik>
     </>
   )
-};
+}

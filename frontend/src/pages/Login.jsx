@@ -1,11 +1,11 @@
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { Navigate, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { useTranslation } from 'react-i18next';
-import { Header } from '../components/Header';
+import { useTranslation } from 'react-i18next'
+import { Header } from '../components/Header'
 import { useRollbar } from '@rollbar/react'
 import { toast } from 'react-toastify'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 export const LoginPage = () => {
   const { t } = useTranslation()
@@ -21,9 +21,9 @@ export const LoginPage = () => {
     <>
       <Header />
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ username: '', password: '' }}
 
-        validate={(values) => {
+        validate={values => {
           const errors = {}
           if (!values.username.trim()) {
             errors.username = t('errors.login')
@@ -46,14 +46,17 @@ export const LoginPage = () => {
             localStorage.setItem('token', token)
             localStorage.setItem('username', response.data.username)
             navigate('/')
-          } catch (err) {
+          }
+          catch (err) {
             if (err.response?.status === 401) {
               setErrors({ password: t('errors.authFailed') })
-            } else {
+            }
+            else {
               toast.error(t('toast.networkError'))
               rollbar.error(err)
             }
-          } finally {
+          }
+          finally {
             setSubmitting(false)
           }
         }}
@@ -88,4 +91,4 @@ export const LoginPage = () => {
       </Formik>
     </>
   )
-};
+}
