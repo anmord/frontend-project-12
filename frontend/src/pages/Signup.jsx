@@ -62,7 +62,9 @@ export const SignupPage = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form>
+          <Form
+            className="mx-auto mt-5 p-4 border rounded shadow"
+            style={{ maxWidth: '400px' }}>
             <div className="form-group">
               <h1>
                 {t('signup')}
@@ -112,6 +114,7 @@ export const SignupPage = () => {
               />
             </div>
             <button
+              className="btn btn-primary w-100 mt-3"
               type="submit"
               disabled={isSubmitting}
             >

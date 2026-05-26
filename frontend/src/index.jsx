@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { store } from './store.js'
 import './i18n.js'
 import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const rollbarConfig = {
   accessToken: import.meta.env.VITE_ROLLBAR_ACCESS_TOKEN,

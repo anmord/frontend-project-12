@@ -62,7 +62,9 @@ export const LoginPage = () => {
         }}
       >
         {() => (
-          <Form>
+          <Form
+            className="mx-auto mt-5 p-4 border rounded shadow"
+            style={{ maxWidth: '400px' }}>
             <div className="form-group">
               <h1>
                 {t('login')}
@@ -96,7 +98,9 @@ export const LoginPage = () => {
                 component="div"
               />
             </div>
-            <button type="submit">
+            <button
+              className="btn btn-primary w-100 mt-3"
+              type="submit">
               {t('login')}
             </button>
             <Link to="/signup">

@@ -1,6 +1,16 @@
 import { Navigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchChannels, fetchMessages, createChannel, addMessage, addChannel, removeChannel, renameChannel, updateChannel, deleteChannel } from '../slices/chatSlice'
+import {
+  addChannel,
+  updateChannel,
+  deleteChannel,
+  setCurrentChannel,
+  fetchChannels,
+  createChannel,
+  removeChannel,
+  renameChannel,
+} from '../slices/channelsSlice'
+import { addMessage, fetchMessages } from '../slices/messagesSlice'
 import { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import axios from 'axios'
@@ -14,7 +24,17 @@ import filter from '../utils/filter'
 export const HomePage = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { channels, messages, loading, error } = useSelector(state => state.chat)
+  const {
+    channels,
+    currentChannelId,
+    loading: channelsLoading,
+    error: channelsError,
+  } = useSelector(state => state.channels)
+  const {
+    messages,
+    loading: messagesLoading,
+    error: messagesError,
+  } = useSelector(state => state.messages)
   const token = localStorage.getItem('token')
   const username = localStorage.getItem('username')
   const [newMessage, setNewMessage] = useState('')
@@ -84,10 +104,10 @@ export const HomePage = () => {
   }, [channels, activeChannel])
 
   useEffect(() => {
-    if (error) {
+    if (channelsError || messagesError) {
       toast.error(t('toast.loadError'))
     }
-  }, [error, t])
+  }, [channelsError, messagesError, t])
 
   if (!token) return <Navigate to="/login" />
 
@@ -112,27 +132,15 @@ export const HomePage = () => {
     }
   }
 
-  const overlayStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0,0,0,0.5)',
-  }
-  const modalStyle = {
-    background: 'white',
-    padding: '20px',
-    margin: '100px auto',
-    width: '300px',
-  }
-
-  if (loading && channels.length === 0) return (
+  if (
+    (channelsLoading || messagesLoading)
+    && channels.length === 0
+  ) return (
     <div>
       {t('common.loading')}
     </div>
   )
-  /* if (!activeChannel) return <div>{t('common.loadingChannel')}</div> */
+
   const currentMessages = messages.filter(
     m => String(m.channelId) === String(activeChannel),
   )
@@ -145,19 +153,20 @@ export const HomePage = () => {
           {t('homePage')}
         </h1>
         <div>
-          <a>
+          <p>
             {t('username', { name: username })}
-          </a>
+          </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+        <div className="d-flex gap-4 mt-4">
 
-          <div style={{ width: '200px' }}>
+          <div className="col-3">
             <h2>
               {t('chat.channels')}
             </h2>
             <button
               type="button"
+              className="btn btn-primary"
               onClick={() => setModalOpen(true)}
             >
               {' '}
@@ -167,14 +176,7 @@ export const HomePage = () => {
 
             {isModalOpen && (
               <div
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  background: 'rgba(0,0,0,0.5)',
-                }}
+                className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
                 onClick={() => setModalOpen(false)}
               >
                 <Formik
@@ -198,12 +200,8 @@ export const HomePage = () => {
                   {({ resetForm }) => (
                     <Form>
                       <div
-                        style={{
-                          background: 'white',
-                          padding: '20px',
-                          margin: '100px auto',
-                          width: '300px',
-                        }}
+                        className="bg-white p-4 mx-auto mt-5 rounded shadow"
+                        style={{ width: '100%', maxWidth: '400px' }}
                         onClick={e => e.stopPropagation()}
                       >
                         <h1>
@@ -224,7 +222,7 @@ export const HomePage = () => {
                           name="name"
                           component="div"
                         />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                        <div className="d-flex justify-content-between mt-3">
                           <button
                             type="button"
                             onClick={() => {
@@ -249,15 +247,15 @@ export const HomePage = () => {
               {channels.map(channel => (
                 <div
                   key={channel.id}
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                  className="d-flex justify-content-between position-relative"
                 >
                   <button
                     type="button"
                     onClick={() => setActiveChannel(channel.id)}
-                    style={{
-                      cursor: 'pointer',
-                      fontWeight: channel.id === activeChannel ? 'bold' : 'normal',
-                    }}
+                    className={`btn w-100 text-start ${channel.id === activeChannel
+                      ? 'btn-secondary'
+                      : 'btn-light'
+                      }`}
                   >
                     <span>
                       #
@@ -284,23 +282,15 @@ export const HomePage = () => {
             </div>
             {channelMenu && (
               <div
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                }}
+                className="position-fixed top-0 start-0 w-100 h-100"
+                style={{ zIndex: 1040 }}
                 onClick={() => setChannelMenu(null)}
               >
                 <div
+                  className="position-absolute bg-white p-2 border rounded shadow"
                   style={{
-                    position: 'absolute',
-                    top: '100px',
-                    left: '100px',
-                    background: 'white',
-                    padding: '10px',
-                    border: '1px solid #ccc',
+                    top: '120px',
+                    left: '220px',
                   }}
                   onClick={e => e.stopPropagation()}
                 >
@@ -325,12 +315,12 @@ export const HomePage = () => {
             )}
             {channelToDelete && (
               <div
-                style={overlayStyle}
+                className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
                 onClick={() => setChannelToDelete(null)}
               >
                 <div
-                  className="modal"
-                  style={modalStyle}
+                  className="bg-white p-4 mx-auto mt-5 rounded shadow"
+                  style={{ width: '100%', maxWidth: '400px' }}
                   onClick={e => e.stopPropagation()}
                 >
                   <p>
@@ -358,7 +348,7 @@ export const HomePage = () => {
             )}
             {channelToRename && (
               <div
-                style={overlayStyle}
+                className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
                 onClick={(e) => {
                   if (e.target === e.currentTarget) {
                     setChannelToRename(null)
@@ -385,7 +375,8 @@ export const HomePage = () => {
                 >
                   <Form>
                     <div
-                      style={modalStyle}
+                      className="bg-white p-4 mx-auto mt-5 rounded shadow"
+                      style={{ width: '100%', maxWidth: '400px' }}
                       onClick={e => e.stopPropagation()}
                     >
                       <h1>
@@ -407,7 +398,7 @@ export const HomePage = () => {
                         component="div"
                       />
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                      <div className="d-flex justify-content-between mt-3">
                         <button
                           type="button"
                           onClick={() => {
@@ -427,7 +418,7 @@ export const HomePage = () => {
             )}
           </div>
 
-          <div style={{ flex: 1 }}>
+          <div className="flex-grow-1">
             <h2>
               {t('chat.chat')}
             </h2>
@@ -444,8 +435,9 @@ export const HomePage = () => {
               ))}
             </ul>
 
-            <div style={{ marginTop: '20px' }}>
+            <div className="mt-4 d-flex gap-2">
               <input
+                className="form-control w-auto flex-grow-1"
                 type="text"
                 value={newMessage}
                 aria-label={t('chat.messagePlaceholder')}
@@ -458,6 +450,7 @@ export const HomePage = () => {
                 placeholder={t('chat.messagePlaceholder')}
               />
               <button
+                className="btn btn-primary"
                 type="button"
                 onClick={handleSendMessage}
                 disabled={!newMessage.trim()}

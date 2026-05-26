@@ -2,117 +2,139 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 export const fetchChannels = createAsyncThunk(
-  'chat/fetchChannels',
+  'channels/fetchChannels',
   async () => {
     const token = localStorage.getItem('token')
-    const response = await axios.get('/api/v1/channels', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return response.data
-  },
-)
 
-export const fetchMessages = createAsyncThunk(
-  'chat/fetchMessages',
-  async () => {
-    const token = localStorage.getItem('token')
-    const response = await axios.get('/api/v1/messages', {
-      headers: { Authorization: `Bearer ${token}` },
+    const response = await axios.get('/api/v1/channels', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
+
     return response.data
   },
 )
 
 export const createChannel = createAsyncThunk(
-  'chat/createChannels',
+  'channels/createChannel',
   async (newChannel) => {
     const token = localStorage.getItem('token')
-    const response = await axios.post('/api/v1/channels', newChannel, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+
+    const response = await axios.post(
+      '/api/v1/channels',
+      newChannel,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
     return response.data
   },
 )
 
 export const removeChannel = createAsyncThunk(
-  'chat/removeChannels',
+  'channels/removeChannel',
   async (id) => {
     const token = localStorage.getItem('token')
+
     await axios.delete(`/api/v1/channels/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
+
     return id
   },
 )
 
 export const renameChannel = createAsyncThunk(
-  'chat/renameChannel',
+  'channels/renameChannel',
   async ({ id, name }) => {
     const token = localStorage.getItem('token')
-    const response = await axios.patch(`/api/v1/channels/${id}`, { name }, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+
+    const response = await axios.patch(
+      `/api/v1/channels/${id}`,
+      { name },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
     return response.data
   },
 )
 
-const chatSlice = createSlice({
-  name: 'chat',
+const channelsSlice = createSlice({
+  name: 'channels',
+
   initialState: {
     channels: [],
     currentChannelId: null,
-    messages: [],
     loading: false,
     error: null,
   },
+
   reducers: {
-    addMessage: (state, action) => {
-      state.messages.push(action.payload)
+    setCurrentChannel: (state, action) => {
+      state.currentChannelId = action.payload
     },
+
     addChannel: (state, action) => {
       state.channels.push(action.payload)
     },
+
     updateChannel: (state, action) => {
-      const updated = action.payload
-      const index = state.channels.findIndex(c => c.id === updated.id)
+      const updatedChannel = action.payload
+
+      const index = state.channels.findIndex(
+        channel => channel.id === updatedChannel.id,
+      )
+
       if (index !== -1) {
-        state.channels[index] = updated
+        state.channels[index] = updatedChannel
       }
     },
+
     deleteChannel: (state, action) => {
       state.channels = state.channels.filter(
-        c => c.id !== action.payload,
+        channel => channel.id !== action.payload,
       )
     },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchChannels.pending, (state) => {
         state.loading = true
         state.error = null
       })
+
       .addCase(fetchChannels.fulfilled, (state, action) => {
         state.loading = false
         state.channels = action.payload
+
+        if (action.payload.length > 0) {
+          state.currentChannelId = action.payload[0].id
+        }
       })
+
       .addCase(fetchChannels.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message
-      })
-      .addCase(fetchMessages.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(fetchMessages.fulfilled, (state, action) => {
-        state.loading = false
-        state.messages = action.payload
-      })
-      .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message
       })
   },
 })
 
-export const { addMessage, addChannel, updateChannel, deleteChannel } = chatSlice.actions
-export default chatSlice.reducer
+export const {
+  setCurrentChannel,
+  addChannel,
+  updateChannel,
+  deleteChannel,
+} = channelsSlice.actions
+
+export default channelsSlice.reducer
