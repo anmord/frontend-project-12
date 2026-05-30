@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { logout } from './authSlice'
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
@@ -126,6 +127,12 @@ const channelsSlice = createSlice({
       .addCase(fetchChannels.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message
+      })
+
+      .addCase(logout, (state) => {
+        state.channels = []
+        state.currentChannelId = null
+        state.error = null
       })
   },
 })

@@ -1,14 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../../node_modules/react-i18next'
+import { useDispatch } from 'react-redux'
+import { logout } from '../slices/authSlice'
+import { useSelector } from 'react-redux'
 
 export const Header = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
+  const token = useSelector(state => state.auth.token)
+
+  const dispatch = useDispatch()
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
+    dispatch(logout())
     navigate('/login')
   }
   return (

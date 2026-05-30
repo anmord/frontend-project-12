@@ -4,7 +4,6 @@ import {
   addChannel,
   updateChannel,
   deleteChannel,
-  setCurrentChannel,
   fetchChannels,
   createChannel,
   removeChannel,
@@ -26,7 +25,6 @@ export const HomePage = () => {
   const dispatch = useDispatch()
   const {
     channels,
-    currentChannelId,
     loading: channelsLoading,
     error: channelsError,
   } = useSelector(state => state.channels)
@@ -35,8 +33,7 @@ export const HomePage = () => {
     loading: messagesLoading,
     error: messagesError,
   } = useSelector(state => state.messages)
-  const token = localStorage.getItem('token')
-  const username = localStorage.getItem('username')
+  const { token, username } = useSelector(state => state.auth)
   const [newMessage, setNewMessage] = useState('')
   const [activeChannel, setActiveChannel] = useState(null)
   const [isModalOpen, setModalOpen] = useState(false)
@@ -64,7 +61,10 @@ export const HomePage = () => {
   })
 
   useEffect(() => {
-    /* 'https://frontend-project-12-5cf7.onrender.com' */
+    if (!token) {
+      return
+    }
+
     const socket = io('/', {
       auth: { token },
     })
@@ -159,7 +159,6 @@ export const HomePage = () => {
         </div>
 
         <div className="d-flex gap-4 mt-4">
-
           <div className="col-3">
             <h2>
               {t('chat.channels')}
@@ -173,7 +172,6 @@ export const HomePage = () => {
               +
               {t('chat.newChannel')}
             </button>
-
             {isModalOpen && (
               <div
                 className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
@@ -242,7 +240,6 @@ export const HomePage = () => {
                 </Formik>
               </div>
             )}
-
             <div>
               {channels.map(channel => (
                 <div
@@ -255,7 +252,7 @@ export const HomePage = () => {
                     className={`btn w-100 text-start ${channel.id === activeChannel
                       ? 'btn-secondary'
                       : 'btn-light'
-                      }`}
+                    }`}
                   >
                     <span>
                       #
@@ -265,7 +262,6 @@ export const HomePage = () => {
                       {channel.name}
                     </span>
                   </button>
-
                   {channel.removable && (
                     <button
                       type="button"
@@ -326,11 +322,9 @@ export const HomePage = () => {
                   <p>
                     {t('chat.confirmDeletion')}
                   </p>
-
                   <button onClick={() => setChannelToDelete(null)}>
                     {t('chat.cancel')}
                   </button>
-
                   <button
                     className="btn btn-danger"
                     onClick={() => {
@@ -397,7 +391,6 @@ export const HomePage = () => {
                         name="name"
                         component="div"
                       />
-
                       <div className="d-flex justify-content-between mt-3">
                         <button
                           type="button"
@@ -417,7 +410,6 @@ export const HomePage = () => {
               </div>
             )}
           </div>
-
           <div className="flex-grow-1">
             <h2>
               {t('chat.chat')}
@@ -434,7 +426,6 @@ export const HomePage = () => {
                 </li>
               ))}
             </ul>
-
             <div className="mt-4 d-flex gap-2">
               <input
                 className="form-control w-auto flex-grow-1"
@@ -459,7 +450,6 @@ export const HomePage = () => {
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { logout } from './authSlice'
 
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
@@ -46,6 +47,11 @@ const messagesSlice = createSlice({
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message
+      })
+
+      .addCase(logout, (state) => {
+        state.messages = []
+        state.error = null
       })
   },
 })
