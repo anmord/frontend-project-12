@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { Header } from '../components/Header'
 import { toast } from 'react-toastify'
 import { useRollbar } from '@rollbar/react'
-
 import { login } from '../slices/authSlice'
 
 export const LoginPage = () => {
@@ -43,14 +42,12 @@ export const LoginPage = () => {
         rollbar.error(result.payload)
       }
     }
-
     setSubmitting(false)
   }
 
   return (
     <>
       <Header />
-
       <Formik
         initialValues={{ username: '', password: '' }}
         validationSchema={validationSchema}
@@ -67,39 +64,32 @@ export const LoginPage = () => {
               <label htmlFor="username">
                 {t('labelLogin')}
               </label>
-
               <Field
                 id="username"
                 type="text"
                 name="username"
                 className="form-control"
               />
-
               <ErrorMessage name="username" component="div" />
             </div>
-
             <div className="form-group">
               <label htmlFor="password">
                 {t('labelPassword')}
               </label>
-
               <Field
                 id="password"
                 type="password"
                 name="password"
                 className="form-control"
               />
-
               <ErrorMessage name="password" component="div" />
             </div>
-
             <button
               className="btn btn-primary w-100 mt-3"
               type="submit"
             >
               {t('login')}
             </button>
-
             <Link to="/signup">
               {t('signup')}
             </Link>

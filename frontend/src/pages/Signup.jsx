@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import * as yup from 'yup'
 import { Header } from '../components/Header'
 import { useTranslation } from 'react-i18next'
-
 import { signup } from '../slices/authSlice'
 
 export const SignupPage = () => {
@@ -53,14 +52,12 @@ export const SignupPage = () => {
         setErrors({ password: t('errors.network') })
       }
     }
-
     setSubmitting(false)
   }
 
   return (
     <>
       <Header />
-
       <Formik
         initialValues={{
           username: '',
@@ -76,42 +73,34 @@ export const SignupPage = () => {
             style={{ maxWidth: '400px' }}
           >
             <h1>{t('signup')}</h1>
-
             <div className="form-group">
               <label htmlFor="username">
                 {t('labelLogup')}
               </label>
-
               <Field
                 id="username"
                 name="username"
                 type="text"
                 className="form-control"
               />
-
               <ErrorMessage name="username" component="div" />
             </div>
-
             <div className="form-group">
               <label htmlFor="password">
                 {t('labelPassword')}
               </label>
-
               <Field
                 id="password"
                 name="password"
                 type="password"
                 className="form-control"
               />
-
               <ErrorMessage name="password" component="div" />
             </div>
-
             <div className="form-group">
               <label htmlFor="confirmPassword">
                 {t('form.confirmPassword')}
               </label>
-
               <Field
                 id="confirmPassword"
                 name="confirmPassword"
