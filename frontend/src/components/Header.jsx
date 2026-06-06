@@ -16,21 +16,23 @@ export const Header = () => {
     navigate('/login')
   }
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-      <h2
-        style={{ cursor: 'pointer' }}
-        onClick={() => navigate('/')}
-      >
-        {t('appName')}
-      </h2>
-      {token && (
-        <button
-          type="button"
-          onClick={handleLogout}
+    <header className="border-bottom bg-white shadow-sm py-3 mb-4">
+      <div className="container-fluid d-flex justify-content-between align-items-center">
+        <h2
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/')}
         >
-          {t('logout')}
-        </button>
-      )}
-    </div>
+          {t('appName')}
+        </h2>
+        {token && (
+          <button
+            type="button"
+            onClick={handleLogout}
+          >
+            {t('logout')}
+          </button>
+        )}
+      </div>
+    </header>
   )
 }

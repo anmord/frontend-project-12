@@ -58,6 +58,14 @@ export const HomePage = () => {
     </div>
   )
 
+  const handleMenuToggle = (channel) => {
+    setChannelMenu(current =>
+      current?.id === channel.id
+        ? null
+        : channel
+    )
+  }
+
   const currentMessages = messages.filter(
     m => String(m.channelId) === String(activeChannel),
   )
@@ -65,59 +73,66 @@ export const HomePage = () => {
   return (
     <>
       <Header />
-      <div>
+      <div className="container-fluid overflow-hidden">
         <h1>
           {t('homePage')}
         </h1>
-        <div>
-          <p>
-            {t('username', { name: username })}
-          </p>
-        </div>
-        <div className="d-flex gap-4 mt-4">
-          <div className="col-3">
-            <h2>
-              {t('chat.channels')}
-            </h2>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => setModalOpen(true)}
-            >
-              {' '}
-              +
-              {t('chat.newChannel')}
-            </button>
-            <ChannelsList
-              channels={channels}
-              activeChannel={activeChannel}
-              onSelectChannel={setActiveChannel}
-              onOpenMenu={setChannelMenu}
-            />
+        <p>
+          {t('username', { name: username })}
+        </p>
+        <div className="row g-4 align-items-stretch">
+          <div className="col-md-3">
+            <div className="card shadow-sm">
+              <div className="card-body">
+                <h2>
+                  {t('chat.channels')}
+                </h2>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => setModalOpen(true)}
+                >
+                  {' '}
+                  +
+                  {t('chat.newChannel')}
+                </button>
+                <ChannelsList
+                  channels={channels}
+                  activeChannel={activeChannel}
+                  onSelectChannel={setActiveChannel}
+                  onOpenMenu={handleMenuToggle}
+                />
+                <ChannelMenu
+                  channel={channelMenu}
+                  onClose={() => setChannelMenu(null)}
+                  onRename={(channel) => {
+                    setChannelToRename(channel)
+                    setChannelMenu(null)
+                  }}
+                  onDelete={(channel) => {
+                    setChannelToDelete(channel)
+                    setChannelMenu(null)
+                  }}
+                />
+              </div>
+            </div>
           </div>
-          <ChatWindow
-            messages={currentMessages}
-            channelId={activeChannel}
-            username={username}
-            token={token}
-          />
+          <div className="col-md-9">
+            <div className="card shadow-sm h-100">
+              <div className="card-body">
+                <ChatWindow
+                  messages={currentMessages}
+                  channelId={activeChannel}
+                  username={username}
+                  token={token}
+                />
+              </div>
+            </div>
+          </div>
           <AddChannelModal
             isOpen={isModalOpen}
             onClose={() => setModalOpen(false)}
-
             onCreated={channel => setActiveChannel(channel.id)}
-          />
-          <ChannelMenu
-            channel={channelMenu}
-            onClose={() => setChannelMenu(null)}
-            onRename={(channel) => {
-              setChannelToRename(channel)
-              setChannelMenu(null)
-            }}
-            onDelete={(channel) => {
-              setChannelToDelete(channel)
-              setChannelMenu(null)
-            }}
           />
           <RenameChannelModal
             channel={channelToRename}

@@ -16,6 +16,7 @@ export const RenameChannelModal = ({ channel, onClose }) => {
   const schema = yup.object({
     name: yup
       .string()
+      .trim()
       .required(t('errors.required'))
       .min(3, t('errors.minMax'))
       .max(20, t('errors.minMax'))

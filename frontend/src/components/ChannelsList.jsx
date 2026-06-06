@@ -16,7 +16,7 @@ export const ChannelsList = ({ channels, activeChannel, onSelectChannel, onOpenM
             className={`btn w-100 text-start ${channel.id === activeChannel
               ? 'btn-secondary'
               : 'btn-light'
-            }`}
+              }`}
           >
             <span>
               #

@@ -16,6 +16,7 @@ export const AddChannelModal = ({ isOpen, onClose, onCreated }) => {
   const schema = yup.object({
     name: yup
       .string()
+      .trim()
       .required(t('errors.required'))
       .min(3, t('errors.minMax'))
       .max(20, t('errors.minMax'))
@@ -34,7 +35,8 @@ export const AddChannelModal = ({ isOpen, onClose, onCreated }) => {
 
   return (
     <div
-      className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
+      className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
+      style={{ zIndex: 1050 }}
       onClick={onClose}
     >
       <Formik
@@ -58,7 +60,7 @@ export const AddChannelModal = ({ isOpen, onClose, onCreated }) => {
         {({ resetForm }) => (
           <Form>
             <div
-              className="bg-white p-4 mx-auto mt-5 rounded shadow"
+              className="bg-white p-4 rounded shadow"
               style={{ width: '100%', maxWidth: '400px' }}
               onClick={e => e.stopPropagation()}
             >

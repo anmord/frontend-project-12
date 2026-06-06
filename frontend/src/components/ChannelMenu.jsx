@@ -9,19 +9,21 @@ export const ChannelMenu = ({ channel, onClose, onRename, onDelete }) => {
 
   return (
     <div
-      className="position-fixed top-0 start-0 w-100 h-100"
+      className="card shadow-sm mt-2 w-100"
       onClick={onClose}
     >
       <div
-        className="position-absolute bg-white p-2 border rounded shadow"
+        className="card-body d-grid gap-2"
         onClick={e => e.stopPropagation()}
       >
         <button
+          className="btn btn-outline-danger w-100"
           onClick={() => onDelete(channel)}
         >
           {t('chat.delete')}
         </button>
         <button
+          className="btn btn-outline-primary w-100"
           onClick={() => onRename(channel)}
         >
           {t('chat.rename')}

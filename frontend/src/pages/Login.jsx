@@ -59,7 +59,6 @@ export const LoginPage = () => {
             style={{ maxWidth: '400px' }}
           >
             <h1>{t('login')}</h1>
-
             <div className="form-group">
               <label htmlFor="username">
                 {t('labelLogin')}

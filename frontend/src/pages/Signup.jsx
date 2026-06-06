@@ -20,6 +20,7 @@ export const SignupPage = () => {
   const schema = yup.object({
     username: yup
       .string()
+      .trim()
       .required(t('errors.required'))
       .min(3, t('errors.minMax'))
       .max(20, t('errors.minMax')),
@@ -107,10 +108,8 @@ export const SignupPage = () => {
                 type="password"
                 className="form-control"
               />
-
               <ErrorMessage name="confirmPassword" component="div" />
             </div>
-
             <button
               className="btn btn-primary w-100 mt-3"
               type="submit"
